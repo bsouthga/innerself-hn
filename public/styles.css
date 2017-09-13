@@ -1,26 +1,56 @@
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0px;
+}
+
+/*
+  Main app container
+ */
 .container {
   padding: 20px;
   padding-top: 0px;
   font-family: sans-serif;
-}
-
-.article {
+  display: flex;
+  flex-direction: column;
 }
 
 .article-list {
-  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
   background-color: #f6f6ef;
 }
 
+.article {
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+}
+
+/*
+  Navigation
+*/
 .navbar {
   background-color: #ff6600;
   padding: 4px;
+  flex: 0;
+  display: flex;
+  flex-direction: row;
 }
 
 .navbar a {
   color: inherit;
   text-decoration: none;
-  margin-right: 5px;
+  margin: 0px 5px;
 }
 
 .navbar .logo {

@@ -3,9 +3,9 @@ import { Article } from './article';
 import { Story } from '../store';
 
 export const ArticleList = (stories?: Story[]) => html`
-  <table class="article-list">
-    <tbody>
+  <div class="article-list">
+    <div>
       ${stories ? stories.map(Article) : '(loading)'}
-    </tbody>
-  </table>
+    </div>
+  </div>
 `;

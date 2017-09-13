@@ -1,4 +1,4 @@
-# [innerself](https://github.com/stasm/innerself) clone of hackernews
+# [innerself](https://github.com/stasm/innerself) hacker news app
 
 ## Features:
 
@@ -20,3 +20,16 @@ This uses a fair amount of modern javascript apis and thus assumes a modern brow
 - [arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
 - [array spread](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator)
 
+## Development
+
+- install dependencies
+
+```
+yarn
+```
+
+- start the dev server
+
+```
+yarn start
+```
