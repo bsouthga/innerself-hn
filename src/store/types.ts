@@ -1,4 +1,4 @@
-export { Action } from './actions/';
+import { RouteResult } from './router';
 
 /**
  * https://github.com/HackerNews/API#items
@@ -18,4 +18,5 @@ export type Story = { url: string; title: string } & Item;
 
 export type State = {
   stories?: Story[];
+  router: RouteResult;
 };

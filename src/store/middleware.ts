@@ -1,6 +1,7 @@
-import { compose } from '../util';
+import { compose } from './util';
 import { router } from './router';
-import { State, Action } from '../types';
+import { State } from './types';
+import { Action } from './actions';
 
 const middleware = compose(router);
 

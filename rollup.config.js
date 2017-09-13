@@ -11,7 +11,12 @@ export default {
   plugins: [
     typescript(),
     resolve(),
-    ...(prod ? [minify({ comments: false })] : [serve('public'), livereload()])
+    ...(prod
+      ? [minify({ comments: false })]
+      : [
+          serve({ contentBase: 'public', historyApiFallback: true }),
+          livereload()
+        ])
   ],
   output: {
     file: 'public/bundle.js',

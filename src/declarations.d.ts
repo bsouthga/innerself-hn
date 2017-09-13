@@ -6,7 +6,10 @@ declare module 'innerself' {
   /**
    * create html markdown
    */
-  function html(components: TemplateStringsArray, ...values: any[]): string;
+  function html(
+    components: TemplateStringsArray,
+    ...values: (string | number | (string | number)[])[]
+  ): string;
 
   /**
    * create application store from reducer

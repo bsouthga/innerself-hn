@@ -49,8 +49,13 @@ body {
 
 .navbar a {
   color: inherit;
+  cursor: pointer;
   text-decoration: none;
   margin: 0px 5px;
+}
+
+.navbar a.active {
+  color: white;
 }
 
 .navbar .logo {
