@@ -81,3 +81,19 @@ export const cachedFetch = (
     return response;
   });
 };
+
+export const queryFromString = (query: string) => {
+  const params = new URLSearchParams(query);
+  const out: { [key: string]: string } = {};
+  for (const [key, value] of params.entries()) {
+    out[key] = value;
+  }
+  return out;
+};
+
+export const queryToString = (query: { [key: string]: string }) => {
+  const params = new URLSearchParams();
+  const keys = Object.keys(query);
+  keys.forEach(key => params.set(key, query[key]));
+  return params.toString();
+};

@@ -15,6 +15,11 @@ body,
   margin: 0;
 }
 
+a:not(.navbar-link):hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /*
   Main app container
  */

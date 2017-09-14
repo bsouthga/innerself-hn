@@ -1,4 +1,4 @@
-import { compose } from './util';
+import { compose } from '../util';
 import { createRouterMiddleware } from './router';
 import { State } from './types';
 import { Action } from './actions';

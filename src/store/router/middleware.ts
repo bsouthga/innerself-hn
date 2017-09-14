@@ -2,6 +2,7 @@ import { Action } from '../actions';
 import { LOCATION_CHANGE_REQUEST, LOCATION_CHANGE_SUCCESS } from './actions';
 import { dispatch } from '../';
 import { getCurrentRouteResult } from './current';
+import { queryToString } from '../../util';
 
 export const createRouterMiddleware = () => {
   /**
@@ -17,7 +18,13 @@ export const createRouterMiddleware = () => {
   return (action: Action): Action => {
     switch (action.type) {
       case LOCATION_CHANGE_REQUEST: {
-        history.pushState({}, 'Innerself News', action.payload.path || '/');
+        const { path, query } = action.payload;
+        const queryString = query && queryToString(query);
+        history.pushState(
+          {},
+          path,
+          (path || '/') + (queryString ? '?' + queryString : '')
+        );
         return {
           type: LOCATION_CHANGE_SUCCESS,
           payload: action.payload

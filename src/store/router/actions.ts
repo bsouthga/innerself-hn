@@ -13,10 +13,11 @@ export type LOCATION_CHANGE_REQUEST = typeof LOCATION_CHANGE_REQUEST;
  */
 type PathKey = keyof typeof paths;
 export type RoutePath = (typeof paths)[PathKey];
+export type Query = { [key: string]: string };
 
 export type RouteResult = {
   path: RoutePath;
-  query?: { [key: string]: string };
+  query?: Query;
 };
 
 type LocationChangeRequest = {

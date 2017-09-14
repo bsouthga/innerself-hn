@@ -4,7 +4,7 @@ import {
   LOCATION_CHANGE_SUCCESS
 } from './router';
 import { TOP_STORIES_SUCCESS, TOP_STORIES_FAILURE } from './actions';
-import { set } from './util';
+import { set } from '../util';
 import { State } from './types';
 import { Action } from './actions';
 

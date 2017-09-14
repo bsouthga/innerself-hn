@@ -1,7 +1,7 @@
 import { dispatch } from './';
 import { TOP_STORIES_REQUEST, topStoriesSuccess } from './actions';
 import { Item, Story } from './types';
-import { cachedFetch } from './util';
+import { cachedFetch } from '../util';
 
 const API_BASE = 'https://hacker-news.firebaseio.com/v0/';
 
