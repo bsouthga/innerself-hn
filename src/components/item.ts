@@ -3,11 +3,14 @@ import { State, getItemById, dispatch, getItem } from '../store';
 import { Article } from './article';
 import { Comment } from './comment';
 import { Loading } from './loading';
+import { NotFound } from './not-found';
 
 export const Item = (state: State) => {
   const { id = '' } = state.router.query || {};
   const { requesting } = state.submissions;
   const item = getItemById(state, id);
+
+  if (!id) return NotFound();
 
   /**
    * no item, need to get it
