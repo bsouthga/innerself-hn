@@ -1,34 +1,21 @@
-import {
-  getCurrentRouteResult,
-  routerReducer,
-  LOCATION_CHANGE_SUCCESS
-} from './router';
-import { TOP_STORIES_SUCCESS, TOP_STORIES_FAILURE } from './actions';
-import { set } from '../util';
-import { State } from './types';
+import { State } from './state';
 import { Action } from './actions';
+import { combineReducers } from './util';
 
-const initialState: State = {
-  router: getCurrentRouteResult()
-};
+/**
+ * individual property reducers
+ */
+import { router } from './router';
+import { submissions } from './submissions';
+import { db } from './db';
+
+export type Reducer = (state: State, action?: Action) => State;
 
 /**
  * Main reducer for app
  */
-export function reducer(state: State = initialState, action: Action) {
-  if (!action) return state;
-  switch (action.type) {
-    case TOP_STORIES_SUCCESS:
-    case TOP_STORIES_FAILURE: {
-      return set(state, action.payload);
-    }
-
-    case LOCATION_CHANGE_SUCCESS: {
-      return set(state, {
-        router: routerReducer(state.router, action)
-      });
-    }
-  }
-
-  return state;
-}
+export const reducer = combineReducers<State>({
+  router,
+  submissions,
+  db
+});

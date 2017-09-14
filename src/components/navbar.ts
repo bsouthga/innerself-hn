@@ -1,6 +1,14 @@
 import html from 'innerself';
-import { paths } from '../store';
-import { NavbarLink } from './navbar-link';
+import { Link, LinkProps } from './link';
+import { paths, connect, State } from '../store';
+
+export const NavbarLink = connect((state: State, props: LinkProps) => {
+  const active = state.router.path === props.path;
+  const className =
+    (props.className || '') + ' navbar-link ' + (active ? 'active' : '');
+
+  return Link({ ...props, className });
+});
 
 const links = [
   { path: 'new' },
@@ -8,8 +16,7 @@ const links = [
   { path: 'comments' },
   { path: 'show' },
   { path: 'ask' },
-  { path: 'jobs' },
-  { path: 'submit' }
+  { path: 'jobs' }
 ];
 
 export const Navbar = () => html`
@@ -19,6 +26,6 @@ export const Navbar = () => html`
       className: 'logo',
       text: 'Innerself News'
     })}
-    ${links.map(NavbarLink).join('|')}
+    ${links.map(NavbarLink).join(' | ')}
   </div>
 `;

@@ -1,6 +1,21 @@
-import { StoryAction } from './stories';
+import { SubmissionAction } from './submissions';
 import { RouterAction } from './router';
+import { DbAction } from './db';
 
-export * from './stories';
+/**
+ * union of all application actions
+ */
+export type Action = InitAction | SubmissionAction | RouterAction | DbAction;
 
-export type Action = StoryAction | RouterAction;
+/**
+ * base init action
+ */
+
+export const INIT = 'INIT';
+export type INIT = typeof INIT;
+
+export type InitAction = {
+  type: INIT;
+};
+
+export const init = (): InitAction => ({ type: INIT });

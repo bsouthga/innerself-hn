@@ -1,6 +1,6 @@
 import { RouteResult, RoutePath } from './actions';
 import * as paths from './paths';
-import { set, queryFromString } from '../../util';
+import { queryFromString } from '../util';
 
 const pathKeys = Object.keys(paths) as (keyof typeof paths)[];
 const validPaths: string[] = pathKeys.map(k => paths[k]);
@@ -18,8 +18,5 @@ export function getCurrentRouteResult(): RouteResult {
     history.pushState({}, 'Innerself News', '/');
   }
 
-  return {
-    path,
-    query
-  };
+  return { path, query };
 }

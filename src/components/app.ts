@@ -3,14 +3,17 @@ import { connect, paths } from '../store';
 
 import { Navbar } from './navbar';
 import { Home } from './home';
-import { CommentPage } from './comment-page';
+import { Item } from './item';
+import { User } from './user';
 
 const Content = connect(state => {
   switch (state.router.path) {
     case paths.HOME:
       return Home(state);
     case paths.ITEM:
-      return CommentPage(state);
+      return Item(state);
+    case paths.USER:
+      return User(state);
 
     default:
       return `Not implemented...`;

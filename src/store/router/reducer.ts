@@ -1,6 +1,10 @@
 import { RouterAction, RouteResult, LOCATION_CHANGE_SUCCESS } from './actions';
+import { getCurrentRouteResult } from './current';
 
-export function routerReducer(state: RouteResult, action: RouterAction) {
+export function router(
+  state: RouteResult = getCurrentRouteResult(),
+  action: RouterAction
+) {
   switch (action.type) {
     case LOCATION_CHANGE_SUCCESS: {
       return action.payload;

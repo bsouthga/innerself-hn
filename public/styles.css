@@ -31,7 +31,6 @@ a:visited {
 }
 
 .content {
-  flex: 1;
   display: flex;
   flex-direction: column;
   padding: 5px;
@@ -50,14 +49,61 @@ a:visited {
   color: rgba(0, 0, 0, 0.7);
 }
 
+.article-index {
+  width: 30px;
+  text-align: right;
+  margin-right: 10px;
+}
+
 .article-title {
   text-decoration: none;
   color: black;
 }
 
-.article-comments:hover {
+.article-link:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #ccc;
+  padding: 10px;
+}
+
+.comment {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+}
+
+.comment:not(:first-child) {
+  margin-top: 10px;
+}
+
+.comment-child {
+  padding-left: 20px;
+}
+
+.comment-info {
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 10px;
+}
+
+.comment-expand {
+  margin-top: 10px;
+  color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.comment-expand:hover {
+  text-decoration: underline;
+}
+
+.comment-text {
+  border-left: 1px solid #ccc;
+  padding-left: 10px;
 }
 
 /*

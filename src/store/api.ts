@@ -1,7 +1,7 @@
 import { dispatch } from './';
-import { TOP_STORIES_REQUEST, topStoriesSuccess } from './actions';
-import { Item, Story } from './types';
-import { cachedFetch } from '../util';
+import { TOP_SUBMISSION_REQUEST, topSubmissionsSuccess } from './submissions';
+import { Item } from './item';
+import { cachedFetch } from './util';
 
 const API_BASE = 'https://hacker-news.firebaseio.com/v0/';
 
@@ -21,6 +21,6 @@ export function item<T extends Item>(id: number) {
 
 export function top(n = 10) {
   return json<number[]>('topstories').then(ids =>
-    Promise.all(ids.slice(0, n).map(id => item<Story>(id)))
+    Promise.all(ids.slice(0, n).map(id => item<Item>(id)))
   );
 }

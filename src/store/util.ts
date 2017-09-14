@@ -1,3 +1,4 @@
+import { Action, init } from './actions';
 /**
  * compose functions of the same signature
  *
@@ -8,14 +9,6 @@ export const compose = <A>(...fns: ((a: A) => A)[]): ((a: A) => A) => {
   if (!first) return a => a;
   return arg => fns.reduceRight((result, fn) => fn(result), first(arg));
 };
-
-/**
- * Object.assign always with empty {}
- *
- * @param objs
- */
-export const set: typeof Object.assign = (...objs: any[]) =>
-  Object.assign({}, ...objs);
 
 /**
  * cached version of fetch
@@ -96,4 +89,21 @@ export const queryToString = (query: { [key: string]: string }) => {
   const keys = Object.keys(query);
   keys.forEach(key => params.set(key, query[key]));
   return params.toString();
+};
+
+/**
+ * combine reducers (like redux)
+ */
+export const combineReducers = <S extends { [key: string]: any }>(
+  reducers: { [K in keyof S]: (state: S[K], action: Action) => S[K] }
+): ((state: S, action?: Action) => S) => {
+  const names = Object.keys(reducers) as (keyof S)[];
+  const initAction = init();
+
+  return (state, action = initAction) => {
+    return names.reduce((out, name) => {
+      out[name] = reducers[name](out[name], action);
+      return out;
+    }, state || {});
+  };
 };
