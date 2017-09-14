@@ -2,11 +2,11 @@
 
 ## TODO
 
-[ ] normalize items
-[ ] component folder structure
-[ ] store folder structure
-[ ] cleanup router code
-[ ] comments
+- [ ] normalize items
+- [ ] component folder structure
+- [ ] store folder structure
+- [ ] cleanup router code
+- [ ] comments
 
 
 ## Features:

@@ -2,3 +2,4 @@ node_modules
 public/bundle.js
 .rpt2_cache
 dist
+**/*.DS_Store
