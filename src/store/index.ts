@@ -8,7 +8,7 @@ const { dispatch: _dispatch, connect, attach } = createStore(
 );
 
 // attach actual dispatch function to window
-window.dispatch = _dispatch;
+window.dispatch = dispatch;
 
 /**
  * convenience wrapper for components
@@ -20,11 +20,7 @@ export function dispatch(action: Action): void;
 export function dispatch(action: Action, toString: true): string;
 export function dispatch(action: Action, toString?: boolean) {
   if (toString) return `'dispatch(${JSON.stringify(action)})'`;
-  return _dispatch(action);
-}
-
-export function init() {
-  dispatch(getTopStories());
+  setTimeout(_dispatch, 0, action);
 }
 
 export { connect, attach };
