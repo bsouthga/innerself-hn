@@ -3,7 +3,8 @@
     "target": "es2015",
     "module": "es2015",
     "moduleResolution": "node",
-    "strict": true
+    "strict": true,
+    "outDir": "dist"
   },
   "include": ["src"],
   "exclude": ["node_modules"]

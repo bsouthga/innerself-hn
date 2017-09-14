@@ -8,7 +8,7 @@ const validPaths: string[] = pathKeys.map(k => paths[k]);
 /**
  * create initial route result for state
  */
-export function initRouter(): RouteResult {
+export function getCurrentRouteResult(): RouteResult {
   const pathname = window.location.pathname.slice(1);
   const valid = validPaths.indexOf(pathname) !== -1;
   const queryParams = new URLSearchParams(window.location.search);

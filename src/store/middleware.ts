@@ -1,9 +1,9 @@
 import { compose } from './util';
-import { router } from './router';
+import { createRouterMiddleware } from './router';
 import { State } from './types';
 import { Action } from './actions';
 
-const middleware = compose(router);
+const middleware = compose(createRouterMiddleware());
 
 export default (reducer: (state: State, action: Action) => State) => (
   state: State,

@@ -1,39 +1,23 @@
 import html from 'innerself';
-import { connect, dispatch, push, HOME, RoutePath, State } from '../store';
+import { NavbarLink } from './navbar-link';
 
-const go = (path: RoutePath) => dispatch(push(path), true);
-
-const Link = connect(
-  (
-    state: State,
-    props: {
-      path: RoutePath;
-      text?: string;
-      className?: string;
-    }
-  ) => html`
-  <a class="${props.className ||
-    (state.router.path === props.path ? 'active' : '')}" onclick=${go(
-    props.path
-  )}>
-    ${props.text || props.path}
-  </a>
-`
-);
+const links = [
+  { path: 'new' },
+  { path: 'threads' },
+  { path: 'comments' },
+  { path: 'show' },
+  { path: 'ask' },
+  { path: 'jobs' },
+  { path: 'submit' }
+];
 
 export const Navbar = () => html`
   <div class="navbar">
-    ${Link({
+    ${NavbarLink({
       path: '',
       className: 'logo',
       text: 'Innerself News'
     })}
-    ${Link({ path: 'new' })}|
-    ${Link({ path: 'threads' })}|
-    ${Link({ path: 'comments' })}|
-    ${Link({ path: 'show' })}|
-    ${Link({ path: 'ask' })}|
-    ${Link({ path: 'jobs' })}|
-    ${Link({ path: 'submit' })}|
+    ${links.map(NavbarLink)}
   </div>
 `;
