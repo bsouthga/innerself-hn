@@ -15,7 +15,9 @@ export const ArticleList = connect((state: State, props: ArticleProps) => {
   return html`
     <div class="article-list">
       <div>
-        ${stories.map((item, index) => Article({ item, index }))}
+        ${!stories.length
+          ? '(no items)'
+          : stories.map((item, index) => Article({ item, index }))}
       </div>
     </div>
   `;
