@@ -6,7 +6,7 @@ import { Loading } from './loading';
 
 export const Item = (state: State) => {
   const { id = '' } = state.router.query || {};
-  const { requesting: { items = {} } } = state.submissions;
+  const { requesting } = state.submissions;
   const item = getItemById(state, id);
 
   /**
@@ -14,16 +14,21 @@ export const Item = (state: State) => {
    */
   if (!item) {
     // not already requesting, request...
-    if (!items[id]) dispatch(getItem(id));
+    if (!requesting[id]) dispatch(getItem(id));
     return Loading();
   }
 
+  if (item.type !== 'story') return '';
+
   const { kids } = item;
+  const comments = kids
+    ? kids.map(id => Comment({ id })).join('')
+    : '(no comments)';
 
   return html`
     ${Article({ item })}
     <div class="comments">
-      ${kids ? kids.map(id => Comment({ id })) : '(no comments)'}
+      ${comments === '' ? Loading() : comments}
     </div>
   `;
 };

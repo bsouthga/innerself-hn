@@ -10,22 +10,25 @@ export const NavbarLink = connect((state: State, props: LinkProps) => {
   return Link({ ...props, className });
 });
 
-const links = [
-  { path: 'new' },
-  { path: 'threads' },
-  { path: 'comments' },
-  { path: 'show' },
-  { path: 'ask' },
-  { path: 'jobs' }
-];
+const links = [{ path: 'new' }, { path: 'show' }, { path: 'ask' }];
 
 export const Navbar = () => html`
   <div class="navbar">
-    ${NavbarLink({
-      path: paths.HOME,
-      className: 'logo',
-      text: 'Innerself News'
-    })}
-    ${links.map(NavbarLink).join(' | ')}
+    <div class="navbar-links">
+      ${NavbarLink({
+        path: paths.HOME,
+        className: 'logo',
+        text: 'Innerself News'
+      })}
+      ${links.map(NavbarLink).join(' | ')}
+    </div>
+    <div class="navbar-right">
+      <a class="navbar-link"
+      href="https://github.com/bsouthga/innerself-hn">
+        <img
+          style="height:15px;width:15px;"
+          src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" />
+      </a>
+    </div>
   </div>
 `;

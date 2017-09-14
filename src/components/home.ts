@@ -1,27 +1,26 @@
 import html from 'innerself';
-import { Article } from './article';
-import { State, dispatch, getTopSubmissions, getItemById } from '../store';
+import {
+  State,
+  dispatch,
+  getTopSubmissions,
+  getItemById,
+  Story,
+  TopRequestType
+} from '../store';
 import { Loading } from './loading';
+import { ArticleList } from './article-list';
 
-export const Home = (state: State) => {
-  const { submissions } = state;
+export const Home = (state: State, type: TopRequestType) => {
+  const { submissions, router } = state;
   const { items, requesting } = submissions;
+  const stories = items[type];
+
   // if we don't yet have the submissions,
   // dispatch (async) event to get them...
-  if (!items) {
-    if (!requesting.top) dispatch(getTopSubmissions());
+  if (!stories) {
+    if (!requesting[type]) dispatch(getTopSubmissions(type));
     return Loading();
   } else {
-    const stories = items.map(id => getItemById(state, id)).filter(Boolean);
-
-    return html`
-      <div class="article-list">
-        <div>
-          ${stories.map(
-            (item, index) => (item ? Article({ item, index }) : '')
-          )}
-        </div>
-      </div>
-    `;
+    return ArticleList({ items: stories });
   }
 };

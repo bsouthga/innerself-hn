@@ -1,12 +1,11 @@
-import { Item } from '../item';
+import { TopRequestType } from './actions';
 
 export type Requesting = {
-  top?: boolean;
-  items?: { [key: string]: boolean | void };
+  [key: string]: boolean | void;
 };
 
 export type SubmissionState = {
-  items?: number[];
+  items: { [K in TopRequestType]?: number[] };
   error?: Error;
   /**
    * currently requesting

@@ -7,7 +7,10 @@ export function router(
 ) {
   switch (action.type) {
     case LOCATION_CHANGE_SUCCESS: {
-      return action.payload;
+      return {
+        ...action.payload,
+        previous: { ...state, previous: undefined }
+      };
     }
     default:
       return state;

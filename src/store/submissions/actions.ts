@@ -1,7 +1,9 @@
 import { dispatch } from '../index';
-import { top, item } from '../api';
-import { Item } from '../item';
-import { insertEntities } from '../db';
+import { top, item, user } from '../api';
+import { Item, User } from '../hn-types';
+import { insertEntities, insertUser } from '../db';
+
+export type TopRequestType = 'job' | 'ask' | 'top' | 'new' | 'show';
 
 /**
  * action union
@@ -10,10 +12,14 @@ export type SubmissionAction =
   | TopSubmissionRequestAction
   | TopSubmissionSuccessAction
   | TopSubmissionFailureAction
+  | ClearTopSubmissionAction
   | GetItemRequestAction
   | GetItemSuccessAction
   | GetItemFailureAction
-  | ToggleExpandItemAction;
+  | ToggleExpandItemAction
+  | GetUserRequestAction
+  | GetUserFailureAction
+  | GetUserSuccessAction;
 
 /**
  *
@@ -35,20 +41,31 @@ export type TOP_SUBMISSION_SUCCESS = typeof TOP_SUBMISSION_SUCCESS;
 export const TOP_SUBMISSION_FAILURE = 'TOP_SUBMISSION_FAILURE';
 export type TOP_SUBMISSION_FAILURE = typeof TOP_SUBMISSION_FAILURE;
 
+export const CLEAR_TOP_SUBMISSION = 'CLEAR_TOP_SUBMISSION';
+export type CLEAR_TOP_SUBMISSION = typeof CLEAR_TOP_SUBMISSION;
+
 export type TopSubmissionRequestAction = {
   type: TOP_SUBMISSION_REQUEST;
+  payload: {
+    id: TopRequestType;
+  };
 };
 export type TopSubmissionFailureAction = {
   type: TOP_SUBMISSION_FAILURE;
   payload: {
+    id: TopRequestType;
     error: Error;
   };
 };
 export type TopSubmissionSuccessAction = {
   type: TOP_SUBMISSION_SUCCESS;
   payload: {
+    id: TopRequestType;
     submissions: number[];
   };
+};
+export type ClearTopSubmissionAction = {
+  type: CLEAR_TOP_SUBMISSION;
 };
 
 /**
@@ -62,39 +79,50 @@ export type TopSubmissionSuccessAction = {
 /**
  * initiate a top Submissions request
  */
-export const topSubmissionsRequest = (): TopSubmissionRequestAction => ({
-  type: TOP_SUBMISSION_REQUEST
+export const topSubmissionsRequest = (
+  id: TopRequestType
+): TopSubmissionRequestAction => ({
+  type: TOP_SUBMISSION_REQUEST,
+  payload: {
+    id
+  }
 });
 
 /**
  * top Submissions success event
  */
 export const topSubmissionsSuccess = (
+  id: TopRequestType,
   submissions: Item[]
 ): TopSubmissionSuccessAction => {
   dispatch(insertEntities(submissions));
   return {
     type: TOP_SUBMISSION_SUCCESS,
-    payload: { submissions: submissions.map(s => s.id) }
+    payload: { id, submissions: submissions.map(s => s.id) }
   };
 };
 
+export const clearTopSumissions = (): ClearTopSubmissionAction => ({
+  type: CLEAR_TOP_SUBMISSION
+});
+
 export const topSubmissionsFailure = (
+  id: TopRequestType,
   error: Error
 ): TopSubmissionFailureAction => ({
   type: TOP_SUBMISSION_FAILURE,
-  payload: { error }
+  payload: { id, error }
 });
 
-export function getTopSubmissions() {
-  top()
-    .then(Submissions => dispatch(topSubmissionsSuccess(Submissions)))
+export function getTopSubmissions(type: TopRequestType) {
+  top(type)
+    .then(Submissions => dispatch(topSubmissionsSuccess(type, Submissions)))
     .catch(err => {
       console.error(err);
-      dispatch(topSubmissionsFailure(err));
+      dispatch(topSubmissionsFailure(type, err));
     });
 
-  return topSubmissionsRequest();
+  return topSubmissionsRequest(type);
 }
 
 export const GET_ITEM_REQUEST = 'GET_ITEM_REQUEST';
@@ -180,3 +208,66 @@ export const toggleExpandItem = (
     payload: { id }
   };
 };
+
+export const GET_USER_REQUEST = 'GET_USER_REQUEST';
+export type GET_USER_REQUEST = typeof GET_USER_REQUEST;
+
+export const GET_USER_SUCCESS = 'GET_USER_SUCCESS';
+export type GET_USER_SUCCESS = typeof GET_USER_SUCCESS;
+
+export const GET_USER_FAILURE = 'GET_USER_FAILURE';
+export type GET_USER_FAILURE = typeof GET_USER_FAILURE;
+
+type GetUserSuccessAction = {
+  type: GET_USER_SUCCESS;
+  payload: {
+    id: string;
+  };
+};
+
+type GetUserRequestAction = {
+  type: GET_USER_REQUEST;
+  payload: {
+    id: string;
+  };
+};
+
+type GetUserFailureAction = {
+  type: GET_USER_FAILURE;
+  payload: {
+    error: Error;
+    id: string;
+  };
+};
+
+export const getUserRequest = (id: string): GetUserRequestAction => ({
+  type: GET_USER_REQUEST,
+  payload: { id }
+});
+
+export const getUserSuccess = (user: User) => {
+  dispatch({
+    type: GET_USER_SUCCESS,
+    payload: { id: user.id }
+  });
+  return insertUser(user);
+};
+
+export const getUserFailure = (
+  error: Error,
+  id: string
+): GetUserFailureAction => ({
+  type: GET_USER_FAILURE,
+  payload: {
+    error,
+    id
+  }
+});
+
+export function getUser(id: string) {
+  user(id)
+    .then(item => dispatch(getUserSuccess(item)))
+    .catch(err => dispatch(getUserFailure(err, id)));
+
+  return getUserRequest(id);
+}

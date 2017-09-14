@@ -4,37 +4,26 @@ import {
   TOP_SUBMISSION_SUCCESS,
   TOP_SUBMISSION_FAILURE,
   TOP_SUBMISSION_REQUEST,
+  CLEAR_TOP_SUBMISSION,
   GET_ITEM_FAILURE,
   GET_ITEM_REQUEST,
   GET_ITEM_SUCCESS,
+  GET_USER_FAILURE,
+  GET_USER_REQUEST,
+  GET_USER_SUCCESS,
   TOGGLE_EXPAND_ITEM
 } from './actions';
 
-const setItemRequestStatus = (
+const setRequestStatus = (
   state: SubmissionState,
-  id: number | number,
+  key: string | number,
   status: boolean
 ) => {
-  const items = {
-    ...state.requesting.items,
-    [id]: true
-  } as Requesting['items'];
-
   return {
     ...state,
     requesting: {
       ...state.requesting,
-      items
-    }
-  };
-};
-
-const setTopRequestStatus = (state: SubmissionState, status: boolean) => {
-  return {
-    ...state,
-    requesting: {
-      ...state.requesting,
-      top: status
+      [key]: status
     }
   };
 };
@@ -45,32 +34,46 @@ const setTopRequestStatus = (state: SubmissionState, status: boolean) => {
 export function submissions(
   state: SubmissionState = {
     requesting: {},
-    expanded: {}
+    expanded: {},
+    items: {}
   },
   action: Action
 ): SubmissionState {
   switch (action.type) {
+    case CLEAR_TOP_SUBMISSION: {
+      return {
+        ...state,
+        items: {}
+      };
+    }
     case TOP_SUBMISSION_REQUEST: {
-      return setTopRequestStatus(state, true);
+      return setRequestStatus(state, action.payload.id, true);
     }
     case TOP_SUBMISSION_SUCCESS: {
+      const id = action.payload.id;
       return {
-        ...setTopRequestStatus(state, false),
-        items: action.payload.submissions
+        ...setRequestStatus(state, id, false),
+        items: {
+          ...state.items,
+          [id]: action.payload.submissions
+        }
       };
     }
     case TOP_SUBMISSION_FAILURE: {
       return {
-        ...setTopRequestStatus(state, false),
+        ...setRequestStatus(state, action.payload.id, false),
         error: action.payload.error
       };
     }
+    case GET_USER_REQUEST:
     case GET_ITEM_REQUEST: {
-      return setItemRequestStatus(state, action.payload.id, true);
+      return setRequestStatus(state, action.payload.id, true);
     }
+    case GET_USER_SUCCESS:
+    case GET_USER_FAILURE:
     case GET_ITEM_SUCCESS:
     case GET_ITEM_FAILURE: {
-      return setItemRequestStatus(state, action.payload.id, false);
+      return setRequestStatus(state, action.payload.id, false);
     }
     case TOGGLE_EXPAND_ITEM: {
       const { id } = action.payload;

@@ -15,16 +15,25 @@ body,
   margin: 0;
 }
 
-a:visited {
+table td,
+table td * {
+  vertical-align: top;
+  font-size: 12px;
+}
+
+a:not(.navbar-link):visited {
   color: #a28ad2 !important;
+}
+
+a:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 /*
   Main app container
  */
 .container {
-  padding: 20px;
-  padding-top: 0px;
   font-family: sans-serif;
   display: flex;
   flex-direction: column;
@@ -36,12 +45,14 @@ a:visited {
   padding: 5px;
   background-color: #f6f6ef;
   overflow-y: auto;
+  flex: 1;
 }
 
 .article {
   padding: 5px;
   display: flex;
   flex-direction: row;
+  flex-shrink: 0;
 }
 
 .article-info {
@@ -53,6 +64,7 @@ a:visited {
   width: 30px;
   text-align: right;
   margin-right: 10px;
+  flex-shrink: 0;
 }
 
 .article-title {
@@ -70,11 +82,10 @@ a:visited {
   flex-direction: column;
   border-top: 1px solid #ccc;
   padding: 10px;
+  flex-shrink: 0;
 }
 
 .comment {
-  display: flex;
-  flex-direction: column;
   font-size: 12px;
 }
 
@@ -83,7 +94,7 @@ a:visited {
 }
 
 .comment-child {
-  padding-left: 20px;
+  margin-left: 40px;
 }
 
 .comment-info {
@@ -92,7 +103,6 @@ a:visited {
 }
 
 .comment-expand {
-  margin-top: 10px;
   color: rgba(0, 0, 0, 0.5);
   cursor: pointer;
 }
@@ -101,9 +111,9 @@ a:visited {
   text-decoration: underline;
 }
 
-.comment-text {
-  border-left: 1px solid #ccc;
-  padding-left: 10px;
+.comment-text,
+.comment-expand {
+  padding-left: 20px;
 }
 
 /*
@@ -114,6 +124,7 @@ a:visited {
   padding: 4px;
   display: flex;
   flex-direction: row;
+  flex-shrink: 0;
 }
 
 .navbar a {
@@ -129,4 +140,8 @@ a:visited {
 
 .navbar .logo {
   font-weight: bold;
+}
+
+.navbar-links {
+  flex: 1;
 }

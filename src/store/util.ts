@@ -31,7 +31,7 @@ export const cachedFetch = (
     expiry = options.seconds || expiry;
   }
   // Use the URL as the cache key to sessionStorage
-  let cacheKey = url;
+  let cacheKey = `__innerself_news__${url}`;
   let cached = localStorage.getItem(cacheKey);
   let whenCached = localStorage.getItem(cacheKey + ':ts');
   if (cached !== null && whenCached !== null) {
@@ -106,4 +106,46 @@ export const combineReducers = <S extends { [key: string]: any }>(
       return out;
     }, state || {});
   };
+};
+
+export const garbageCollect = () => {
+  const timestamp = /^__innerself_news__.*:ts$/g;
+  const keys = Object.keys(localStorage).filter(k => timestamp.test(k));
+  for (const key of keys) {
+    const cached = localStorage.getItem(key);
+    let age = (Date.now() - Number(cached)) / 1000;
+    if (age > 5 * 60) {
+      localStorage.removeItem(key);
+    }
+  }
+};
+
+const MINUTE = 60 * 1000;
+const HOUR = 60 * MINUTE;
+const DAY = 24 * HOUR;
+const { round } = Math;
+
+const plural = (n: number) => (n === 1 ? ' ago' : 's ago');
+
+export const formatDate = (d: number) => {
+  const time = new Date(d * 1000);
+  const now = new Date();
+  const diff = now.getTime() - time.getTime();
+  switch (true) {
+    case diff > DAY: {
+      const v = round(diff / DAY);
+      return v + ' day' + plural(v);
+    }
+    case diff > HOUR: {
+      const v = round(diff / HOUR);
+      return v + ' hour' + plural(v);
+    }
+    case diff > MINUTE: {
+      const v = round(diff / MINUTE);
+      return round(diff / MINUTE) + ' minute' + plural(v);
+    }
+    default: {
+      return 'less than a minute ago';
+    }
+  }
 };

@@ -2,6 +2,10 @@ import { createStore } from 'innerself';
 import { reducer } from './reducer';
 import middleware from './middleware';
 import { Action } from './actions';
+import { garbageCollect } from './util';
+
+// remove expired timestamp items
+setInterval(garbageCollect, 60 * 1000 * 5);
 
 const { dispatch: _dispatch, connect, attach } = createStore(
   middleware(reducer)
@@ -24,7 +28,7 @@ export function dispatch(action: Action, toString?: boolean) {
 }
 
 export { connect, attach };
-export { Item } from './item';
+export * from './hn-types';
 export * from './actions';
 export * from './state';
 export * from './router';

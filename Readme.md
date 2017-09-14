@@ -1,13 +1,5 @@
 # [innerself](https://github.com/stasm/innerself) hacker news app
 
-## TODO
-
-- [ ] normalize items
-- [ ] component folder structure
-- [ ] store folder structure
-- [ ] cleanup router code
-- [ ] comments
-
 
 ## Features:
 
@@ -16,7 +8,7 @@
 - [client side routing](https://developer.mozilla.org/en-US/docs/Web/API/History_API#section_4)
 - [request caching](https://www.sitepoint.com/cache-fetched-ajax-requests/)
 - component based architecture
-- modular redux-type store
+- modular, normalized, redux-type store
 - pure (strict mode) TypeScript for development
 
 ## Requirements

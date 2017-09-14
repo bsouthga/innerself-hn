@@ -1,10 +1,8 @@
 export const NEW = 'new';
-export const THREADS = 'threads';
 export const COMMENTS = 'comments';
 export const HOME = '';
 export const ITEM = 'item';
 export const SHOW = 'show';
 export const ASK = 'ask';
-export const JOBS = 'jobs';
-export const SUBMIT = 'submit';
 export const USER = 'user';
+export const SUBMITTED = 'submitted';
