@@ -17,7 +17,7 @@ export const createRouterMiddleware = () => {
   return (action: Action): Action => {
     switch (action.type) {
       case LOCATION_CHANGE_REQUEST: {
-        history.pushState({}, 'Innerself News', action.payload.path);
+        history.pushState({}, 'Innerself News', action.payload.path || '/');
         return {
           type: LOCATION_CHANGE_SUCCESS,
           payload: action.payload

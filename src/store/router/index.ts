@@ -1,6 +1,7 @@
 import { Action } from '../actions';
+import * as paths from './paths';
 
-export * from './paths';
+export { paths };
 export * from './actions';
 export * from './current';
 export { routerReducer } from './reducer';

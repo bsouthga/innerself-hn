@@ -1,4 +1,5 @@
 import html from 'innerself';
+import { paths } from '../store';
 import { NavbarLink } from './navbar-link';
 
 const links = [
@@ -14,10 +15,10 @@ const links = [
 export const Navbar = () => html`
   <div class="navbar">
     ${NavbarLink({
-      path: '',
+      path: paths.HOME,
       className: 'logo',
       text: 'Innerself News'
     })}
-    ${links.map(NavbarLink)}
+    ${links.map(NavbarLink).join('|')}
   </div>
 `;

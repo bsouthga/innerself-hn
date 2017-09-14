@@ -1,13 +1,23 @@
 import html from 'innerself';
-import { connect } from '../store';
-import { Navbar } from './navbar';
-import { ArticleList } from './article-list';
+import { connect, paths } from '../store';
 
-export const App = connect(
-  state => html`
+import { Navbar } from './navbar';
+import { Home } from './home';
+
+const Content = connect(state => {
+  switch (state.router.path) {
+    case paths.HOME:
+      return Home(state);
+    default:
+      return `Not implemented...`;
+  }
+});
+
+export const App = () => html`
   <div class="container">
     ${Navbar()}
-    ${ArticleList(state.stories)}
+    <div class="content">
+      ${Content()}
+    </div>
   </div>
-`
-);
+`;
