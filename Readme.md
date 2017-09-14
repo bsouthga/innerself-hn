@@ -1,5 +1,14 @@
 # [innerself](https://github.com/stasm/innerself) hacker news app
 
+## TODO
+
+[ ] normalize items
+[ ] component folder structure
+[ ] store folder structure
+[ ] cleanup router code
+[ ] comments
+
+
 ## Features:
 
 - pure (strict mode) TypeScript for development

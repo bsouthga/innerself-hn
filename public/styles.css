@@ -7,8 +7,12 @@ html {
   box-sizing: inherit;
 }
 
-body {
-  margin: 0px;
+html,
+body,
+#root,
+.container {
+  height: 100%;
+  margin: 0;
 }
 
 /*
@@ -28,6 +32,7 @@ body {
   flex-direction: column;
   padding: 5px;
   background-color: #f6f6ef;
+  overflow-y: auto;
 }
 
 .article {
@@ -42,7 +47,6 @@ body {
 .navbar {
   background-color: #ff6600;
   padding: 4px;
-  flex: 0;
   display: flex;
   flex-direction: row;
 }
