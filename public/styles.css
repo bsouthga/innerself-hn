@@ -15,9 +15,8 @@ body,
   margin: 0;
 }
 
-a:not(.navbar-link):hover {
-  text-decoration: underline;
-  cursor: pointer;
+a:visited {
+  color: #a28ad2 !important;
 }
 
 /*
@@ -46,11 +45,26 @@ a:not(.navbar-link):hover {
   flex-direction: row;
 }
 
+.article-info {
+  font-size: 0.8em;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.article-title {
+  text-decoration: none;
+  color: black;
+}
+
+.article-comments:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /*
   Navigation
 */
 .navbar {
-  background-color: #ff6600;
+  background-color: #a28ad2;
   padding: 4px;
   display: flex;
   flex-direction: row;

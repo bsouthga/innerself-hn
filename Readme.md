@@ -12,7 +12,7 @@
 ## Features:
 
 - pure (strict mode) TypeScript for development
-- <10kb of total compiled/bundled javascript
+- ~3kb of total compiled/bundled/gzipped javascript
 - 1 external runtime dependency ([innerself, ~50 LOC](https://github.com/stasm/innerself))
 - [client side routing](https://developer.mozilla.org/en-US/docs/Web/API/History_API#section_4)
 - [request caching](https://www.sitepoint.com/cache-fetched-ajax-requests/)

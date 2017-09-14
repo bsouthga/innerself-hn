@@ -14,7 +14,13 @@ export type Item = {
   deleted: boolean;
 };
 
-export type Story = { url: string; title: string } & Item;
+export type Story = {
+  url: string;
+  title: string;
+  score: number;
+  by: string;
+  descendants: number;
+} & Item;
 
 export type State = {
   stories?: Story[];

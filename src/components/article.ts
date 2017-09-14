@@ -7,12 +7,14 @@ export const Article = (item: Story, index: number) => html`
     <div class="article-index">
       ${index + 1}.
     </div>
-    <div class="article-info">
-      <a href="${item.url}">${item.title}</a>
-      <div>
+    <div>
+      <a class="article-title" href="${item.url}">${item.title}</a>
+      <div class="article-info">
+      ${item.score} points by ${item.by} |
         ${Link({
           path: 'item',
-          text: 'comments',
+          text: `${item.descendants} comments`,
+          className: 'article-comments',
           query: { id: item.id.toString() }
         })}
       </div>
