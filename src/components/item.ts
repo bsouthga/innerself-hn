@@ -29,7 +29,7 @@ export const Item = (state: State) => {
     : '(no comments)';
 
   return html`
-    ${Article({ item })}
+    ${Article({ item, text: true })}
     <div class="comments">
       ${comments === '' ? Loading() : comments}
     </div>

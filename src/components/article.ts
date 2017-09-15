@@ -3,7 +3,13 @@ import { Story } from '../store';
 import { formatDate } from '../store/util';
 import { Link } from './link';
 
-export const Article = ({ item, index }: { item: Story; index?: number }) => {
+export type ArticleProps = {
+  item: Story;
+  index?: number;
+  text?: boolean;
+};
+
+export const Article = ({ item, index, text }: ArticleProps) => {
   const user = Link({
     path: 'user',
     text: `${item.by}`,
@@ -25,6 +31,14 @@ export const Article = ({ item, index }: { item: Story; index?: number }) => {
       </div>`
       : '';
 
+  const itemText = !text
+    ? ''
+    : html`
+    <div class="article-text">
+      ${item.text}
+    </div>
+  `;
+
   return html`
     <div class="article">
       ${indexInfo}
@@ -33,6 +47,7 @@ export const Article = ({ item, index }: { item: Story; index?: number }) => {
         <div class="article-info">
         ${item.score} points by ${user} ${formatDate(item.time)} | ${comments}
         </div>
+        ${itemText}
       </div>
     </div>
   `;

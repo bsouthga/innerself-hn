@@ -77,6 +77,11 @@ a:hover {
   cursor: pointer;
 }
 
+.article-text {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
 .comments {
   display: flex;
   flex-direction: column;

@@ -23,6 +23,7 @@ export type Story = {
   time: number;
   title: string;
   url: string;
+  text?: string;
 };
 
 export type Job = {
