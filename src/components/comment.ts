@@ -4,7 +4,7 @@ import {
   Item,
   connect,
   getItemById,
-  getItem,
+  getItems,
   dispatch,
   toggleExpandItem
 } from '../store';
@@ -43,7 +43,7 @@ export const Comment: (
   const item = getItemById(state, id);
 
   if (!item) {
-    if (!requesting[id]) dispatch(getItem(Number(id)));
+    if (!requesting[id]) dispatch(getItems([id]));
     return '';
   }
 

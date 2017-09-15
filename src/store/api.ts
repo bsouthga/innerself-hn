@@ -19,11 +19,10 @@ export const json = <T = any>(
   return cachedFetch(url).then(result => result.json() as Promise<T>);
 };
 
-export const item = <T extends Item>(id: number) => json<T>(`item/${id}`);
+export const items = <T extends Item>(ids: number[]) =>
+  Promise.all(ids.map(id => json<T>(`item/${id}`)));
 
 export const top = (type: TopRequestType, n = 20) =>
-  json<number[]>(type + 'stories').then(ids =>
-    Promise.all(ids.slice(0, n).map(id => item<Item>(id)))
-  );
+  json<number[]>(type + 'stories').then(ids => items<Item>(ids.slice(0, n)));
 
 export const user = (id: string | number) => json<User>(`user/${id}`);

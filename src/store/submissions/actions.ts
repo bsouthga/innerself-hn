@@ -1,5 +1,5 @@
 import { dispatch } from '../index';
-import { top, item, user } from '../api';
+import { top, items, user } from '../api';
 import { Item, User } from '../hn-types';
 import { insertEntities, insertUser } from '../db';
 
@@ -137,14 +137,14 @@ export type GET_ITEM_FAILURE = typeof GET_ITEM_FAILURE;
 type GetItemSuccessAction = {
   type: GET_ITEM_SUCCESS;
   payload: {
-    id: number;
+    ids: number[];
   };
 };
 
 type GetItemRequestAction = {
   type: GET_ITEM_REQUEST;
   payload: {
-    id: number;
+    ids: number[];
   };
 };
 
@@ -152,41 +152,41 @@ type GetItemFailureAction = {
   type: GET_ITEM_FAILURE;
   payload: {
     error: Error;
-    id: number;
+    ids: number[];
   };
 };
 
-export const getItemRequest = (id: number): GetItemRequestAction => ({
+export const getItemsRequest = (ids: number[]): GetItemRequestAction => ({
   type: GET_ITEM_REQUEST,
-  payload: { id }
+  payload: { ids }
 });
 
-export const getItemSuccess = (item: Item) => {
+export const getItemsSuccess = (items: Item[]) => {
   dispatch({
     type: GET_ITEM_SUCCESS,
-    payload: { id: item.id }
+    payload: { ids: items.map(({ id }) => id) }
   });
-  return insertEntities([item]);
+  return insertEntities(items);
 };
 
-export const getItemFailure = (
+export const getItemsFailure = (
   error: Error,
-  id: number
+  ids: number[]
 ): GetItemFailureAction => ({
   type: GET_ITEM_FAILURE,
   payload: {
     error,
-    id
+    ids
   }
 });
 
-export function getItem(_id: number | string) {
-  const id = Number(_id);
-  item(id)
-    .then(item => dispatch(getItemSuccess(item)))
-    .catch(err => dispatch(getItemFailure(err, id)));
+export function getItems(_ids: (number | string)[]) {
+  const ids = _ids.map(Number);
+  items(ids)
+    .then(items => dispatch(getItemsSuccess(items)))
+    .catch(err => dispatch(getItemsFailure(err, ids)));
 
-  return getItemRequest(id);
+  return getItemsRequest(ids);
 }
 
 export const TOGGLE_EXPAND_ITEM = 'TOGGLE_EXPAND_ITEM';

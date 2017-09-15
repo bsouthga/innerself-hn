@@ -1,5 +1,5 @@
 import html from 'innerself';
-import { State, getItemById, dispatch, getItem } from '../store';
+import { State, getItemById, dispatch, getItems } from '../store';
 import { Article } from './article';
 import { Comment } from './comment';
 import { Loading } from './loading';
@@ -17,7 +17,7 @@ export const Item = (state: State) => {
    */
   if (!item) {
     // not already requesting, request...
-    if (!requesting[id]) dispatch(getItem(id));
+    if (!requesting[id]) dispatch(getItems([id]));
     return Loading();
   }
 

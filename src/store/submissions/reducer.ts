@@ -18,15 +18,23 @@ import { set } from '../util';
 const setRequestStatus = (
   state: SubmissionState,
   action: {
-    payload: { id: string | number };
+    payload: {
+      id?: string | number;
+      ids?: (string | number)[];
+    };
   },
   status: boolean
-) =>
-  set(state, {
-    requesting: set(state.requesting, {
-      [action.payload.id]: status
-    })
+) => {
+  const { id, ids } = action.payload;
+  if (!id && !ids) return state;
+  const _ids = ids || (id && [id]) || [];
+  return set(state, {
+    requesting: set(
+      state.requesting,
+      _ids.reduce((out, i) => set(out, { [i]: status }), {})
+    )
   });
+};
 
 /**
  * Main reducer for app
