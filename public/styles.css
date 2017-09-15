@@ -1,18 +1,13 @@
-html {
+html,
+body {
   box-sizing: border-box;
+  margin: 0;
+  background-color: #f6f6ef;
 }
 *,
 *:before,
 *:after {
   box-sizing: inherit;
-}
-
-html,
-body,
-#root,
-.container {
-  height: 100%;
-  margin: 0;
 }
 
 table td,
@@ -43,9 +38,7 @@ a:hover {
   display: flex;
   flex-direction: column;
   padding: 5px;
-  background-color: #f6f6ef;
   overflow-y: auto;
-  flex: 1;
 }
 
 .article {
