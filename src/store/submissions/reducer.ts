@@ -13,20 +13,20 @@ import {
   GET_USER_SUCCESS,
   TOGGLE_EXPAND_ITEM
 } from './actions';
+import { set } from '../util';
 
 const setRequestStatus = (
   state: SubmissionState,
-  key: string | number,
+  action: {
+    payload: { id: string | number };
+  },
   status: boolean
-) => {
-  return {
-    ...state,
-    requesting: {
-      ...state.requesting,
-      [key]: status
-    }
-  };
-};
+) =>
+  set(state, {
+    requesting: set(state.requesting, {
+      [action.payload.id]: status
+    })
+  });
 
 /**
  * Main reducer for app
@@ -41,49 +41,44 @@ export function submissions(
 ): SubmissionState {
   switch (action.type) {
     case CLEAR_TOP_SUBMISSION: {
-      return {
-        ...state,
+      return set(state, {
         items: {}
-      };
+      });
     }
     case TOP_SUBMISSION_REQUEST: {
-      return setRequestStatus(state, action.payload.id, true);
+      return setRequestStatus(state, action, true);
     }
     case TOP_SUBMISSION_SUCCESS: {
       const id = action.payload.id;
-      return {
-        ...setRequestStatus(state, id, false),
-        items: {
-          ...state.items,
+      return set(setRequestStatus(state, action, false), {
+        items: set(state.items, {
           [id]: action.payload.submissions
-        }
-      };
+        })
+      });
     }
     case TOP_SUBMISSION_FAILURE: {
-      return {
-        ...setRequestStatus(state, action.payload.id, false),
+      return set(setRequestStatus(state, action, false), {
         error: action.payload.error
-      };
+      });
     }
     case GET_USER_REQUEST:
     case GET_ITEM_REQUEST: {
-      return setRequestStatus(state, action.payload.id, true);
+      return setRequestStatus(state, action, true);
     }
     case GET_USER_SUCCESS:
     case GET_USER_FAILURE:
     case GET_ITEM_SUCCESS:
     case GET_ITEM_FAILURE: {
-      return setRequestStatus(state, action.payload.id, false);
+      return setRequestStatus(state, action, false);
     }
     case TOGGLE_EXPAND_ITEM: {
       const { id } = action.payload;
-      return {
-        ...state,
-        expanded: {
-          ...state.expanded,
-          [id]: !state.expanded[id]
-        }
-      };
+      const { expanded } = state;
+      return set(state, {
+        expanded: set(expanded, {
+          [id]: !expanded[id]
+        })
+      });
     }
   }
 

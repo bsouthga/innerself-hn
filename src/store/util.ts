@@ -1,4 +1,12 @@
 import { Action, init } from './actions';
+
+const STORAGE_PREFIX = '__innerself_news__';
+const storage = localStorage;
+
+export const keys = Object.keys;
+export const set: typeof Object.assign = (...objs: any[]) =>
+  Object.assign({}, ...objs);
+
 /**
  * compose functions of the same signature
  *
@@ -31,9 +39,9 @@ export const cachedFetch = (
     expiry = options.seconds || expiry;
   }
   // Use the URL as the cache key to sessionStorage
-  let cacheKey = `__innerself_news__${url}`;
-  let cached = localStorage.getItem(cacheKey);
-  let whenCached = localStorage.getItem(cacheKey + ':ts');
+  let cacheKey = `${STORAGE_PREFIX}${url}`;
+  let cached = storage.getItem(cacheKey);
+  let whenCached = storage.getItem(cacheKey + ':ts');
   if (cached !== null && whenCached !== null) {
     // it was in sessionStorage! Yay!
     // Even though 'whenCached' is a string, this operation
@@ -45,8 +53,8 @@ export const cachedFetch = (
       return Promise.resolve(response);
     } else {
       // We need to clean up this old key
-      localStorage.removeItem(cacheKey);
-      localStorage.removeItem(cacheKey + ':ts');
+      storage.removeItem(cacheKey);
+      storage.removeItem(cacheKey + ':ts');
     }
   }
 
@@ -66,8 +74,8 @@ export const cachedFetch = (
           .clone()
           .text()
           .then(content => {
-            localStorage.setItem(cacheKey, content);
-            localStorage.setItem(cacheKey + ':ts', Date.now().toString());
+            storage.setItem(cacheKey, content);
+            storage.setItem(cacheKey + ':ts', Date.now().toString());
           });
       }
     }
@@ -86,8 +94,8 @@ export const queryFromString = (query: string) => {
 
 export const queryToString = (query: { [key: string]: string }) => {
   const params = new URLSearchParams();
-  const keys = Object.keys(query);
-  keys.forEach(key => params.set(key, query[key]));
+  const paramKeys = keys(query);
+  paramKeys.forEach(key => params.set(key, query[key]));
   return params.toString();
 };
 
@@ -97,7 +105,7 @@ export const queryToString = (query: { [key: string]: string }) => {
 export const combineReducers = <S extends { [key: string]: any }>(
   reducers: { [K in keyof S]: (state: S[K], action: Action) => S[K] }
 ): ((state: S, action?: Action) => S) => {
-  const names = Object.keys(reducers) as (keyof S)[];
+  const names = keys(reducers) as (keyof S)[];
   const initAction = init();
 
   return (state, action = initAction) => {
@@ -109,13 +117,13 @@ export const combineReducers = <S extends { [key: string]: any }>(
 };
 
 export const garbageCollect = () => {
-  const timestamp = /^__innerself_news__.*:ts$/g;
-  const keys = Object.keys(localStorage).filter(k => timestamp.test(k));
-  for (const key of keys) {
-    const cached = localStorage.getItem(key);
+  const timestamp = new RegExp(`^${STORAGE_PREFIX}.*:ts$`, 'g');
+  const storageKeys = keys(storage).filter(k => timestamp.test(k));
+  for (const key of storageKeys) {
+    const cached = storage.getItem(key);
     let age = (Date.now() - Number(cached)) / 1000;
     if (age > 5 * 60) {
-      localStorage.removeItem(key);
+      storage.removeItem(key);
     }
   }
 };
@@ -126,24 +134,22 @@ const DAY = 24 * HOUR;
 const { round } = Math;
 
 const plural = (n: number) => (n === 1 ? ' ago' : 's ago');
+const _formatDate = (diff: number, div: number, text: string) => {
+  const v = round(diff / MINUTE);
+  return v + ' ' + text + plural(v);
+};
 
 export const formatDate = (d: number) => {
   const time = new Date(d * 1000);
   const now = new Date();
   const diff = now.getTime() - time.getTime();
   switch (true) {
-    case diff > DAY: {
-      const v = round(diff / DAY);
-      return v + ' day' + plural(v);
-    }
-    case diff > HOUR: {
-      const v = round(diff / HOUR);
-      return v + ' hour' + plural(v);
-    }
-    case diff > MINUTE: {
-      const v = round(diff / MINUTE);
-      return round(diff / MINUTE) + ' minute' + plural(v);
-    }
+    case diff > DAY:
+      return _formatDate(diff, DAY, 'day');
+    case diff > HOUR:
+      return _formatDate(diff, HOUR, 'hour');
+    case diff > MINUTE:
+      return _formatDate(diff, MINUTE, 'minute');
     default: {
       return 'less than a minute ago';
     }

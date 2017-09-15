@@ -21,7 +21,7 @@ export const Article = ({ item, index, text }: ArticleProps) => {
     path: 'item',
     text: `${item.descendants || 0} comments`,
     className: 'article-link',
-    query: { id: item.id.toString() }
+    query: { id: `${item.id}` }
   });
 
   const indexInfo =

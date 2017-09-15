@@ -11,6 +11,9 @@ const prod = process.env.NODE_ENV === 'production';
 
 function prodPlugin() {
   return {
+    transformBundle(source) {
+      return source.replace(/\s+/g, ' ');
+    },
     onwrite() {
       const index = fs.readFileSync('./public/index.html').toString();
       const redirect = fs.readFileSync('./public/redirect.html').toString();
