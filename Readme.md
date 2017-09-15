@@ -5,9 +5,9 @@
 
 - <4kb of total compiled/bundled/gzipped javascript
 - 1 external runtime dependency ([innerself, ~50 SLOC](https://github.com/stasm/innerself))
-- [client side routing](https://developer.mozilla.org/en-US/docs/Web/API/History_API#section_4)
-- [request caching](https://www.sitepoint.com/cache-fetched-ajax-requests/)
-- component based architecture
+- [client side routing](https://github.com/bsouthga/innerself-hn/tree/master/src/store/router)
+- [request caching](https://github.com/bsouthga/innerself-hn/blob/master/src/store/util.ts#L21)
+- [component based architecture](https://github.com/bsouthga/innerself-hn/tree/master/src/components)
 - modular, normalized, redux-type store
 - pure (strict mode) TypeScript for development
 
