@@ -49,12 +49,14 @@ export const Comment: (
 
   if (item.type !== 'comment') return '';
 
-  const user = Link({
-    path: 'user',
-    text: `${item.by}`,
-    className: 'article-link',
-    query: { id: item.by || '' }
-  });
+  const user = !item.by
+    ? '[deleted]'
+    : Link({
+        path: 'user',
+        text: `${item.by}`,
+        className: 'article-link',
+        query: { id: item.by || '' }
+      });
 
   const kids = item.kids || [];
 

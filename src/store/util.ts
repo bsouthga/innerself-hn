@@ -120,7 +120,7 @@ const { round } = Math;
 
 const plural = (n: number) => (n === 1 ? ' ago' : 's ago');
 const _formatDate = (diff: number, div: number, text: string) => {
-  const v = round(diff / MINUTE);
+  const v = round(diff / div);
   return v + ' ' + text + plural(v);
 };
 
