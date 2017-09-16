@@ -55,7 +55,7 @@ export const Submitted = (state: State) => {
           switch (true) {
             case isComment(item): {
               comments++;
-              return showComments ? Comment({ id }) : '';
+              return showComments ? Comment({ id, compact: true }) : '';
             }
             case isStory(item): {
               stories++;
