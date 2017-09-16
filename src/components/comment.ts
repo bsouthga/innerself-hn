@@ -9,6 +9,7 @@ import {
 } from '../store';
 import { ensureRequested, formatDate, isComment } from '../store/util';
 import { Link } from './link';
+import { Loading } from './loading';
 
 interface CommentProps {
   id: string | number;
@@ -70,21 +71,24 @@ export const Comment: (
 
   const kids = item.kids || [];
 
-  const children =
-    !kids.length || props.compact
+  const childrenToggle = !expanded[id]
+    ? ToggleLink({
+        id,
+        children: `show children (${kids.length})`
+      })
+    : ToggleLink({
+        id,
+        children: `hide children`
+      });
+
+  const showChildren = kids.length && !props.compact;
+
+  const children = !showChildren
+    ? ''
+    : !expanded[id]
       ? ''
-      : !expanded[id]
-        ? ToggleLink({
-            id,
-            children: `show children (${kids.length})`
-          })
-        : html`
-        ${ToggleLink({
-          id,
-          children: `hide children`
-        })}
-        ${kids.map(kid => Comment({ id: kid, child: true }))}
-      `;
+      : kids.map(kid => Comment({ id: kid, child: true })).join('') ||
+        Loading();
 
   return html`
     <div class="comment${child ? ' comment-child' : ''}">
@@ -94,6 +98,7 @@ export const Comment: (
       <div class="comment-text">
         ${item.text}
       </div>
+      ${showChildren ? childrenToggle : ''}
       ${children}
     </div>
   `;
