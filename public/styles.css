@@ -79,11 +79,16 @@ a:hover {
 }
 
 .footer,
+.host,
 .article-info,
 .submitted-title,
 .paging-controls {
   font-size: 0.8em;
   color: rgba(0, 0, 0, 0.7);
+}
+
+.host {
+  display: inline-block;
 }
 
 .submitted {

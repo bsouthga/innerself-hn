@@ -39,11 +39,16 @@ export const Article = ({ item, index, text }: ArticleProps) => {
     </div>
   `;
 
+  const url = item.url;
+  const host = url && new URL(url).hostname;
+  const www = /^www\./;
+
   return html`
     <div class="article">
       ${indexInfo}
       <div>
-        <a class="article-title" href="${item.url || '#'}">${item.title}</a>
+        <a class="article-title" href="${url || '#'}">${item.title}</a>
+        ${host ? `<div class="host">(${host.replace(www, '')})</div>` : ''}
         <div class="article-info">
         ${item.score} points by ${user} ${formatDate(item.time)} | ${comments}
         </div>
