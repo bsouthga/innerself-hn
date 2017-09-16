@@ -40,8 +40,13 @@ a:hover {
   display: flex;
   flex-direction: column;
   padding: 5px;
-  padding-bottom: 50px;
   overflow-y: auto;
+  border-bottom: 1px solid #ccc;
+}
+
+.footer {
+  padding: 30px;
+  text-align: center;
 }
 
 .article {
@@ -73,6 +78,7 @@ a:hover {
   font-size: 12px;
 }
 
+.footer,
 .article-info,
 .submitted-title,
 .submitted-controls {

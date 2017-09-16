@@ -34,5 +34,8 @@ export const App = () => html`
     <div class="content">
       ${Content()}
     </div>
+    <div class="footer">
+      <a href="https://bsou.io">Ben Southgate</a> | 2017
+    </div>
   </div>
 `;
