@@ -1,13 +1,6 @@
 import html from 'innerself';
-import {
-  dispatch,
-  getItemById,
-  getItems,
-  getQuery,
-  getRequesting,
-  State
-} from '../store';
-import { isStory } from '../store/util';
+import { getQuery, State } from '../store';
+import { ensureRequested, isComment, isStory } from '../store/util';
 import { Article } from './article';
 import { Comment } from './comment';
 import { Loading } from './loading';
@@ -15,21 +8,9 @@ import { NotFound } from './not-found';
 
 export const Item = (state: State) => {
   const { id = '' } = getQuery(state);
-  const requesting = getRequesting(state);
-  const item = getItemById(state, id);
-
   if (!id) return NotFound();
-
-  /**
-   * no item, need to get it
-   */
-  if (!item) {
-    // not already requesting, request...
-    if (!requesting[id]) dispatch(getItems([id]));
-    return Loading();
-  }
-
-  if (!isStory(item)) return '';
+  const item = ensureRequested(state, id);
+  if (!isStory(item) && !isComment(item)) return Loading();
 
   const { kids } = item;
   const comments = kids
@@ -37,7 +18,9 @@ export const Item = (state: State) => {
     : '(no comments)';
 
   return html`
-    ${Article({ item, text: true })}
+    ${isComment(item)
+      ? Comment({ id, compact: true })
+      : Article({ item, text: true })}
     <div class="comments">
       ${comments === '' ? Loading() : comments}
     </div>

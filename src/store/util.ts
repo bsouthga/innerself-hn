@@ -1,5 +1,9 @@
+import { dispatch } from './';
 import { Action, init } from './actions';
+import { getItemById } from './db';
 import { Comment, Item, Story } from './hn-types';
+import { State } from './state';
+import { getItems, getRequesting } from './submissions';
 
 const STORAGE_PREFIX = '__innerself_news__';
 const storage = localStorage;
@@ -18,6 +22,22 @@ export const round = Math.round;
 export const keys = Object.keys;
 export const set: typeof Object.assign = (...objs: any[]) =>
   Object.assign({}, ...objs);
+
+/**
+ *
+ * check if item exists in state, request if necessary
+ *
+ */
+export const ensureRequested = (state: State, id: string | number) => {
+  const item = getItemById(state, id);
+  const requesting = getRequesting(state);
+
+  if (!item) {
+    if (!requesting[id]) dispatch(getItems([id]));
+  } else {
+    return item;
+  }
+};
 
 /**
  * compose functions of the same signature

@@ -3,18 +3,17 @@ import {
   connect,
   dispatch,
   getExpanded,
-  getItemById,
-  getItems,
-  getRequesting,
+  paths,
   State,
   toggleExpandItem
 } from '../store';
-import { formatDate, isComment } from '../store/util';
+import { ensureRequested, formatDate, isComment } from '../store/util';
 import { Link } from './link';
 
 interface CommentProps {
   id: string | number;
   child?: boolean;
+  compact?: boolean;
 }
 
 interface ToggleLinkProps {
@@ -40,35 +39,46 @@ export const Comment: (
 ) => string = connect((state: State, props: CommentProps) => {
   const { id, child } = props;
   const expanded = getExpanded(state);
-  const requesting = getRequesting(state);
-  const item = getItemById(state, id);
-
-  if (!item) {
-    if (!requesting[id]) dispatch(getItems([id]));
-    return '';
-  }
+  const item = ensureRequested(state, id);
 
   if (!isComment(item)) return '';
 
   const user = !item.by
     ? '[deleted]'
     : Link({
-        path: 'user',
+        path: paths.USER,
         text: `${item.by}`,
         className: 'article-link',
         query: { id: item.by || '' }
       });
 
+  const commentLink = Link({
+    path: paths.ITEM,
+    text: formatDate(item.time),
+    className: 'article-link',
+    query: { id: `${item.id}` }
+  });
+
+  const parentLink =
+    props.compact &&
+    Link({
+      path: paths.ITEM,
+      text: 'parent',
+      className: 'article-link',
+      query: { id: `${item.parent}` }
+    });
+
   const kids = item.kids || [];
 
-  const children = !kids.length
-    ? ''
-    : !expanded[id]
-      ? ToggleLink({
-          id,
-          children: `show children (${kids.length})`
-        })
-      : html`
+  const children =
+    !kids.length || props.compact
+      ? ''
+      : !expanded[id]
+        ? ToggleLink({
+            id,
+            children: `show children (${kids.length})`
+          })
+        : html`
         ${ToggleLink({
           id,
           children: `hide children`
@@ -79,7 +89,7 @@ export const Comment: (
   return html`
     <div class="comment${child ? ' comment-child' : ''}">
       <div class="comment-info">
-       ${user} ${formatDate(item.time)}
+       ${user} ${commentLink} ${parentLink ? '| ' + parentLink : ''}
       </div>
       <div class="comment-text">
         ${item.text}
