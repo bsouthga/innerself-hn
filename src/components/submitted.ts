@@ -44,23 +44,16 @@ export const Submitted = (state: State) => {
   const showComments = showAll || typesToShow === 'comments';
   const showStories = showAll || typesToShow === 'stories';
 
-  let comments = 0;
-  let stories = 0;
-
   const content = need.length
     ? Loading()
     : show
         .map(id => {
           const item = getItemById(state, id)!;
           switch (true) {
-            case isComment(item): {
-              comments++;
+            case isComment(item):
               return showComments ? Comment({ id, compact: true }) : '';
-            }
-            case isStory(item): {
-              stories++;
+            case isStory(item):
               return showStories ? Article({ item: item as Story }) : '';
-            }
           }
         })
         .join('');
