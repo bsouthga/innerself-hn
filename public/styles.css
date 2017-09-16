@@ -95,6 +95,10 @@ a:hover {
   margin-top: 20px;
 }
 
+.submitted-item {
+  margin-bottom: 10px;
+}
+
 .paging-controls {
   width: 100%;
   text-align: center;

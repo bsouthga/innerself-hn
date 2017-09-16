@@ -17,6 +17,9 @@ import { Loading } from './loading';
 import { Next, Previous, RESULTS_PER_PAGE } from './paging';
 import { ensureUser } from './user';
 
+const SubmittedItem = (item: string) =>
+  `<div class="submitted-item">${item.trim()}</div>`;
+
 export const Submitted = (state: State) => {
   const user = ensureUser(state);
   const requesting = getRequesting(state);
@@ -56,6 +59,8 @@ export const Submitted = (state: State) => {
               return showStories ? Article({ item: item as Story }) : '';
           }
         })
+        .filter(Boolean)
+        .map(SubmittedItem)
         .join('');
 
   const links = [
