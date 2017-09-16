@@ -3,7 +3,7 @@
  */
 export type Item = Comment | Story | Job | Poll | PollOpt;
 
-export type Comment = {
+export interface Comment {
   type: 'comment';
   by: string;
   id: number;
@@ -11,9 +11,9 @@ export type Comment = {
   parent: number;
   text: string;
   time: number;
-};
+}
 
-export type Story = {
+export interface Story {
   type: 'story';
   by: string;
   descendants: number;
@@ -24,9 +24,9 @@ export type Story = {
   title: string;
   url: string;
   text?: string;
-};
+}
 
-export type Job = {
+export interface Job {
   type: 'job';
   by: string;
   id: number;
@@ -35,9 +35,9 @@ export type Job = {
   time: number;
   title: number;
   url: number;
-};
+}
 
-export type Poll = {
+export interface Poll {
   type: 'poll';
   by: string;
   descendants: number;
@@ -48,9 +48,9 @@ export type Poll = {
   text: string;
   time: number;
   title: string;
-};
+}
 
-export type PollOpt = {
+export interface PollOpt {
   type: 'pollopt';
   by: string;
   id: number;
@@ -58,13 +58,13 @@ export type PollOpt = {
   score: number;
   text: string;
   time: number;
-};
+}
 
-export type User = {
+export interface User {
   id: string;
   karma: number;
   created: number;
   about?: string;
   delay?: number;
   submitted?: number[];
-};
+}

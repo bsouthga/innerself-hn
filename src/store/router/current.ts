@@ -1,8 +1,8 @@
-import { RouteResult, RoutePath } from './actions';
+import { keys, queryFromString } from '../util';
+import { RoutePath, RouteResult } from './actions';
 import * as paths from './paths';
-import { queryFromString, keys } from '../util';
 
-const pathKeys = keys(paths) as (keyof typeof paths)[];
+const pathKeys = keys(paths) as Array<keyof typeof paths>;
 const validPaths: string[] = pathKeys.map(k => paths[k]);
 
 /**

@@ -1,11 +1,12 @@
 import html from 'innerself';
 import { connect, paths } from '../store';
 
-import { NotFound } from './not-found';
-import { Navbar } from './navbar';
 import { Home } from './home';
 import { Item } from './item';
-import { User, Submitted } from './user';
+import { Navbar } from './navbar';
+import { NotFound } from './not-found';
+import { Submitted } from './submitted';
+import { User } from './user';
 
 const Content = connect(state => {
   switch (state.router.path) {
@@ -21,8 +22,6 @@ const Content = connect(state => {
       return Item(state);
     case paths.USER:
       return User(state);
-    case paths.SUBMITTED:
-      return Submitted(state);
 
     default:
       return NotFound();

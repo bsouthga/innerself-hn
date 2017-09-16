@@ -1,14 +1,14 @@
 import html from 'innerself';
 import {
-  State,
   dispatch,
-  getTopSubmissions,
   getItemById,
+  getTopSubmissions,
+  State,
   Story,
   TopRequestType
 } from '../store';
-import { Loading } from './loading';
 import { ArticleList } from './article-list';
+import { Loading } from './loading';
 
 export const Home = (state: State, type: TopRequestType) => {
   const { submissions, router } = state;

@@ -8,13 +8,13 @@ declare module 'innerself' {
    */
   function html(
     components: TemplateStringsArray,
-    ...values: (
+    ...values: Array<
       | boolean
       | void
       | null
       | string
       | number
-      | (void | null | boolean | string | number)[])[]
+      | Array<void | null | boolean | string | number>>
   ): string;
 
   /**

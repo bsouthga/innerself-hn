@@ -13,22 +13,22 @@ export type LOCATION_CHANGE_REQUEST = typeof LOCATION_CHANGE_REQUEST;
  */
 type PathKey = keyof typeof paths;
 export type RoutePath = (typeof paths)[PathKey];
-export type Query = { [key: string]: string };
+export interface Query { [key: string]: string }
 
-export type RouteResult = {
+export interface RouteResult {
   path: RoutePath;
   query?: Query;
-};
+}
 
-type LocationChangeRequest = {
+interface LocationChangeRequest {
   type: LOCATION_CHANGE_REQUEST;
   payload: RouteResult;
-};
+}
 
-type LocationChangeSuccess = {
+interface LocationChangeSuccess {
   type: LOCATION_CHANGE_SUCCESS;
   payload: RouteResult;
-};
+}
 
 /**
  * navigate to a route

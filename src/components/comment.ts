@@ -1,26 +1,26 @@
 import html from 'innerself';
 import {
-  State,
-  Item,
   connect,
+  dispatch,
   getItemById,
   getItems,
-  dispatch,
+  Item,
+  State,
   toggleExpandItem
 } from '../store';
 import { formatDate } from '../store/util';
-import { Loading } from './loading';
 import { Link } from './link';
+import { Loading } from './loading';
 
-type CommentProps = {
+interface CommentProps {
   id: string | number;
   child?: boolean;
-};
+}
 
-type ToggleLinkProps = {
+interface ToggleLinkProps {
   id: number | string;
   children: string;
-};
+}
 
 /**
  * toggle expanding comment children
@@ -72,7 +72,7 @@ export const Comment: (
           id,
           children: `hide children`
         })}
-        ${kids.map(id => Comment({ id, child: true }))}
+        ${kids.map(kid => Comment({ id: kid, child: true }))}
       `;
 
   return html`

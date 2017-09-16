@@ -1,10 +1,10 @@
 import html from 'innerself';
-import { getItemById, Story, State, connect } from '../store';
+import { connect, getItemById, State, Story } from '../store';
 import { Article } from './article';
 
-type ArticleProps = {
+interface ArticleProps {
   items: number[];
-};
+}
 
 export const ArticleList = connect((state: State, props: ArticleProps) => {
   const { items } = props;

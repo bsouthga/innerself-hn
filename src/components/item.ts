@@ -1,5 +1,5 @@
 import html from 'innerself';
-import { State, getItemById, dispatch, getItems } from '../store';
+import { dispatch, getItemById, getItems, State } from '../store';
 import { Article } from './article';
 import { Comment } from './comment';
 import { Loading } from './loading';
@@ -25,7 +25,7 @@ export const Item = (state: State) => {
 
   const { kids } = item;
   const comments = kids
-    ? kids.map(id => Comment({ id })).join('')
+    ? kids.map(kid => Comment({ id: kid })).join('')
     : '(no comments)';
 
   return html`

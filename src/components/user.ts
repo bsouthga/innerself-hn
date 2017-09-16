@@ -1,10 +1,18 @@
 import html from 'innerself';
-import { State, getUserById, getUser, dispatch } from '../store';
+import {
+  dispatch,
+  getItemById,
+  getItems,
+  getUser,
+  getUserById,
+  State,
+  Story
+} from '../store';
 import { formatDate } from '../store/util';
-import { NotFound } from './not-found';
-import { Loading } from './loading';
 import { Link } from './link';
-import { ArticleList } from './article-list';
+import { Loading } from './loading';
+import { NotFound } from './not-found';
+import { Submitted } from './submitted';
 
 export const ensureUser = (state: State) => {
   const { router: { query }, submissions: { requesting } } = state;
@@ -32,19 +40,8 @@ export const User = (state: State) => {
         <tr><td>created:</td><td>${formatDate(user.created)}</td></tr>
         <tr><td>karma:</td><td>${user.karma}</td></tr>
         <tr><td>about:</td><td>${user.about || 'blank'}</td></tr>
-        <tr>
-          <td>links:</td>
-          <td>
-            ${Link({ path: 'submitted', query: { id: user.id } })}
-          </td>
-        </tr>
       </table>
+      ${Submitted(state)}
     </div>
   `;
-};
-
-export const Submitted = (state: State) => {
-  const user = ensureUser(state);
-  if (typeof user === 'string') return user;
-  return ArticleList({ items: user.submitted || [] });
 };

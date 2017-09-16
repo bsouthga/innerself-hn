@@ -40,6 +40,7 @@ a:hover {
   display: flex;
   flex-direction: column;
   padding: 5px;
+  padding-bottom: 50px;
   overflow-y: auto;
 }
 
@@ -48,11 +49,6 @@ a:hover {
   display: flex;
   flex-direction: row;
   flex-shrink: 0;
-}
-
-.article-info {
-  font-size: 0.8em;
-  color: rgba(0, 0, 0, 0.7);
 }
 
 .article-index {
@@ -77,7 +73,29 @@ a:hover {
   font-size: 12px;
 }
 
-.comments {
+.article-info,
+.submitted-title,
+.submitted-controls {
+  font-size: 0.8em;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.submitted {
+  margin-top: 20px;
+}
+
+.submitted-controls {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.submitted-controls .active {
+  text-decoration: underline;
+}
+
+.comments,
+.submitted-content {
   display: flex;
   flex-direction: column;
   border-top: 1px solid #ccc;

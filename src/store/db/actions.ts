@@ -1,33 +1,29 @@
-import { Item, User } from '../hn-types';
 import { dispatch } from '../';
+import { Item, User } from '../hn-types';
+import { set } from '../util';
 
 export const INSERT_ENTITIES = 'INSERT_ENTITIES';
 export type INSERT_ENTITIES = typeof INSERT_ENTITIES;
 
 export type DbAction = InsertEntitesAction | InsertUserAction;
 
-type EntityHash = {
+interface EntityHash {
   [key: string]: Item | void;
-};
+}
 
-type InsertEntitesAction = {
+interface InsertEntitesAction {
   type: INSERT_ENTITIES;
   payload: {
     entities: EntityHash;
   };
-};
+}
 
-export const insertEntities = (entities: Item[]): InsertEntitesAction => {
+export const insertEntities = (items: Item[]): InsertEntitesAction => {
+  const entities = items.reduce((out, e) => set(out, { [e.id]: e }), {});
   return {
     type: INSERT_ENTITIES,
     payload: {
-      entities: entities.reduce(
-        (out, e) => {
-          out[e.id] = e;
-          return out;
-        },
-        {} as EntityHash
-      )
+      entities
     }
   };
 };
@@ -35,12 +31,12 @@ export const insertEntities = (entities: Item[]): InsertEntitesAction => {
 export const INSERT_USER = 'INSERT_USER';
 export type INSERT_USER = typeof INSERT_USER;
 
-type InsertUserAction = {
+interface InsertUserAction {
   type: INSERT_USER;
   payload: {
     users: { [key: string]: User };
   };
-};
+}
 
 export const insertUser = (user: User): InsertUserAction => ({
   type: INSERT_USER,

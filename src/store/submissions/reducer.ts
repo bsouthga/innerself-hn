@@ -1,9 +1,6 @@
 import { Action } from '../actions';
-import { SubmissionState, Requesting } from './state';
+import { set } from '../util';
 import {
-  TOP_SUBMISSION_SUCCESS,
-  TOP_SUBMISSION_FAILURE,
-  TOP_SUBMISSION_REQUEST,
   CLEAR_TOP_SUBMISSION,
   GET_ITEM_FAILURE,
   GET_ITEM_REQUEST,
@@ -11,27 +8,30 @@ import {
   GET_USER_FAILURE,
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
-  TOGGLE_EXPAND_ITEM
+  TOGGLE_EXPAND_ITEM,
+  TOP_SUBMISSION_FAILURE,
+  TOP_SUBMISSION_REQUEST,
+  TOP_SUBMISSION_SUCCESS
 } from './actions';
-import { set } from '../util';
+import { Requesting, SubmissionState } from './state';
 
 const setRequestStatus = (
   state: SubmissionState,
   action: {
     payload: {
       id?: string | number;
-      ids?: (string | number)[];
+      ids?: Array<string | number>;
     };
   },
   status: boolean
 ) => {
   const { id, ids } = action.payload;
   if (!id && !ids) return state;
-  const _ids = ids || (id && [id]) || [];
+  const idList = ids || (id && [id]) || [];
   return set(state, {
     requesting: set(
       state.requesting,
-      _ids.reduce((out, i) => set(out, { [i]: status }), {})
+      idList.reduce((out, i) => set(out, { [i]: status }), {})
     )
   });
 };

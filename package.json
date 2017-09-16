@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "rollup": "rollup -c ./rollup.config.js",
+    "test": "tslint --project ./ --fix --type-check './src/**/*.ts'",
     "start": "npm run rollup -- -w",
     "build": "export NODE_ENV='production' && npm run rollup",
     "deploy": "npm run build && gh-pages -d ./public-gh-pages"
@@ -21,6 +22,8 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-serve": "^0.4.2",
     "rollup-plugin-typescript2": "^0.5.2",
+    "tslint": "^5.7.0",
+    "tslint-config-prettier": "^1.5.0",
     "typescript": "^2.5.2"
   },
   "dependencies": {

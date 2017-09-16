@@ -1,7 +1,7 @@
-import { DbState } from './state';
 import { Action } from '../actions';
-import { INSERT_ENTITIES, INSERT_USER } from './actions';
 import { set } from '../util';
+import { INSERT_ENTITIES, INSERT_USER } from './actions';
+import { DbState } from './state';
 
 export function db(
   state: DbState = { entities: {}, users: {} },

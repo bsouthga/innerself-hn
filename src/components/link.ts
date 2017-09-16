@@ -1,15 +1,15 @@
 import html from 'innerself';
-import { connect, dispatch, push, RoutePath, State, Query } from '../store';
+import { connect, dispatch, push, Query, RoutePath, State } from '../store';
 
 const go = (path: RoutePath, query?: Query) =>
   dispatch(push(path, query), true);
 
-export type LinkProps = {
+export interface LinkProps {
   path: RoutePath;
   text?: string;
   query?: Query;
   className?: string;
-};
+}
 
 /**
  * client side routing link

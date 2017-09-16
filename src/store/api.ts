@@ -1,10 +1,10 @@
 import { dispatch } from './';
+import { Item, User } from './hn-types';
 import {
   TOP_SUBMISSION_REQUEST,
-  topSubmissionsSuccess,
-  TopRequestType
+  TopRequestType,
+  topSubmissionsSuccess
 } from './submissions';
-import { Item, User } from './hn-types';
 import { cachedFetch } from './util';
 
 const API_BASE = 'https://hacker-news.firebaseio.com/v0/';
@@ -19,10 +19,12 @@ export const json = <T = any>(
   return cachedFetch(url).then(result => result.json() as Promise<T>);
 };
 
-export const items = <T extends Item>(ids: number[]) =>
+export const requestItems = <T extends Item>(ids: number[]) =>
   Promise.all(ids.map(id => json<T>(`item/${id}`)));
 
-export const top = (type: TopRequestType, n = 20) =>
-  json<number[]>(type + 'stories').then(ids => items<Item>(ids.slice(0, n)));
+export const requestTop = (type: TopRequestType, n = 20) =>
+  json<number[]>(type + 'stories').then(ids =>
+    requestItems<Item>(ids.slice(0, n))
+  );
 
-export const user = (id: string | number) => json<User>(`user/${id}`);
+export const requestUser = (id: string | number) => json<User>(`user/${id}`);

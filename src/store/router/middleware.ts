@@ -1,9 +1,9 @@
-import { Action } from '../actions';
-import { LOCATION_CHANGE_REQUEST, LOCATION_CHANGE_SUCCESS } from './actions';
 import { dispatch } from '../';
-import { getCurrentRouteResult } from './current';
-import { queryToString } from '../util';
+import { Action } from '../actions';
 import { clearTopSumissions } from '../submissions';
+import { queryToString } from '../util';
+import { LOCATION_CHANGE_REQUEST, LOCATION_CHANGE_SUCCESS } from './actions';
+import { getCurrentRouteResult } from './current';
 
 export const createRouterMiddleware = () => {
   /**

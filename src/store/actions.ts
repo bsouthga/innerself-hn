@@ -1,6 +1,6 @@
-import { SubmissionAction } from './submissions';
-import { RouterAction } from './router';
 import { DbAction } from './db';
+import { RouterAction } from './router';
+import { SubmissionAction } from './submissions';
 
 /**
  * union of all application actions
@@ -14,8 +14,8 @@ export type Action = InitAction | SubmissionAction | RouterAction | DbAction;
 export const INIT = 'INIT';
 export type INIT = typeof INIT;
 
-export type InitAction = {
+export interface InitAction {
   type: INIT;
-};
+}
 
 export const init = (): InitAction => ({ type: INIT });

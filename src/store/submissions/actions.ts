@@ -1,7 +1,7 @@
-import { dispatch } from '../index';
-import { top, items, user } from '../api';
-import { Item, User } from '../hn-types';
+import { requestItems, requestTop, requestUser } from '../api';
 import { insertEntities, insertUser } from '../db';
+import { Item, User } from '../hn-types';
+import { dispatch } from '../index';
 
 export type TopRequestType = 'job' | 'ask' | 'top' | 'new' | 'show';
 
@@ -44,29 +44,29 @@ export type TOP_SUBMISSION_FAILURE = typeof TOP_SUBMISSION_FAILURE;
 export const CLEAR_TOP_SUBMISSION = 'CLEAR_TOP_SUBMISSION';
 export type CLEAR_TOP_SUBMISSION = typeof CLEAR_TOP_SUBMISSION;
 
-export type TopSubmissionRequestAction = {
+export interface TopSubmissionRequestAction {
   type: TOP_SUBMISSION_REQUEST;
   payload: {
     id: TopRequestType;
   };
-};
-export type TopSubmissionFailureAction = {
+}
+export interface TopSubmissionFailureAction {
   type: TOP_SUBMISSION_FAILURE;
   payload: {
     id: TopRequestType;
     error: Error;
   };
-};
-export type TopSubmissionSuccessAction = {
+}
+export interface TopSubmissionSuccessAction {
   type: TOP_SUBMISSION_SUCCESS;
   payload: {
     id: TopRequestType;
     submissions: number[];
   };
-};
-export type ClearTopSubmissionAction = {
+}
+export interface ClearTopSubmissionAction {
   type: CLEAR_TOP_SUBMISSION;
-};
+}
 
 /**
  *
@@ -115,7 +115,7 @@ export const topSubmissionsFailure = (
 });
 
 export function getTopSubmissions(type: TopRequestType) {
-  top(type)
+  requestTop(type)
     .then(Submissions => dispatch(topSubmissionsSuccess(type, Submissions)))
     .catch(err => {
       console.error(err);
@@ -134,27 +134,27 @@ export type GET_ITEM_SUCCESS = typeof GET_ITEM_SUCCESS;
 export const GET_ITEM_FAILURE = 'GET_ITEM_FAILURE';
 export type GET_ITEM_FAILURE = typeof GET_ITEM_FAILURE;
 
-type GetItemSuccessAction = {
+interface GetItemSuccessAction {
   type: GET_ITEM_SUCCESS;
   payload: {
     ids: number[];
   };
-};
+}
 
-type GetItemRequestAction = {
+interface GetItemRequestAction {
   type: GET_ITEM_REQUEST;
   payload: {
     ids: number[];
   };
-};
+}
 
-type GetItemFailureAction = {
+interface GetItemFailureAction {
   type: GET_ITEM_FAILURE;
   payload: {
     error: Error;
     ids: number[];
   };
-};
+}
 
 export const getItemsRequest = (ids: number[]): GetItemRequestAction => ({
   type: GET_ITEM_REQUEST,
@@ -180,9 +180,9 @@ export const getItemsFailure = (
   }
 });
 
-export function getItems(_ids: (number | string)[]) {
-  const ids = _ids.map(Number);
-  items(ids)
+export function getItems(inputIds: Array<number | string>) {
+  const ids = inputIds.map(Number);
+  requestItems(ids)
     .then(items => dispatch(getItemsSuccess(items)))
     .catch(err => dispatch(getItemsFailure(err, ids)));
 
@@ -192,17 +192,17 @@ export function getItems(_ids: (number | string)[]) {
 export const TOGGLE_EXPAND_ITEM = 'TOGGLE_EXPAND_ITEM';
 export type TOGGLE_EXPAND_ITEM = typeof TOGGLE_EXPAND_ITEM;
 
-export type ToggleExpandItemAction = {
+export interface ToggleExpandItemAction {
   type: TOGGLE_EXPAND_ITEM;
   payload: {
     id: number;
   };
-};
+}
 
 export const toggleExpandItem = (
-  _id: number | string
+  inputId: number | string
 ): ToggleExpandItemAction => {
-  const id = Number(_id);
+  const id = Number(inputId);
   return {
     type: TOGGLE_EXPAND_ITEM,
     payload: { id }
@@ -218,27 +218,27 @@ export type GET_USER_SUCCESS = typeof GET_USER_SUCCESS;
 export const GET_USER_FAILURE = 'GET_USER_FAILURE';
 export type GET_USER_FAILURE = typeof GET_USER_FAILURE;
 
-type GetUserSuccessAction = {
+interface GetUserSuccessAction {
   type: GET_USER_SUCCESS;
   payload: {
     id: string;
   };
-};
+}
 
-type GetUserRequestAction = {
+interface GetUserRequestAction {
   type: GET_USER_REQUEST;
   payload: {
     id: string;
   };
-};
+}
 
-type GetUserFailureAction = {
+interface GetUserFailureAction {
   type: GET_USER_FAILURE;
   payload: {
     error: Error;
     id: string;
   };
-};
+}
 
 export const getUserRequest = (id: string): GetUserRequestAction => ({
   type: GET_USER_REQUEST,
@@ -265,7 +265,7 @@ export const getUserFailure = (
 });
 
 export function getUser(id: string) {
-  user(id)
+  requestUser(id)
     .then(item => dispatch(getUserSuccess(item)))
     .catch(err => dispatch(getUserFailure(err, id)));
 

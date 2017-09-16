@@ -3,11 +3,11 @@ import { Story } from '../store';
 import { formatDate } from '../store/util';
 import { Link } from './link';
 
-export type ArticleProps = {
+export interface ArticleProps {
   item: Story;
   index?: number;
   text?: boolean;
-};
+}
 
 export const Article = ({ item, index, text }: ArticleProps) => {
   const user = Link({

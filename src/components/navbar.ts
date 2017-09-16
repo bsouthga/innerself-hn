@@ -1,6 +1,6 @@
 import html from 'innerself';
+import { connect, paths, State } from '../store';
 import { Link, LinkProps } from './link';
-import { paths, connect, State } from '../store';
 
 export const NavbarLink = connect((state: State, props: LinkProps) => {
   const active = state.router.path === props.path;

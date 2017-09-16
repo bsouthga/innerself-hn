@@ -1,10 +1,10 @@
 import { TopRequestType } from './actions';
 
-export type Requesting = {
+export interface Requesting {
   [key: string]: boolean | void;
-};
+}
 
-export type SubmissionState = {
+export interface SubmissionState {
   items: { [K in TopRequestType]?: number[] };
   error?: Error;
   /**
@@ -12,4 +12,4 @@ export type SubmissionState = {
    */
   requesting: Requesting;
   expanded: { [key: string]: boolean };
-};
+}
