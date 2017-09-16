@@ -93,12 +93,11 @@ export const topSubmissionsRequest = (
  */
 export const topSubmissionsSuccess = (
   id: TopRequestType,
-  submissions: Item[]
+  submissions: number[]
 ): TopSubmissionSuccessAction => {
-  dispatch(insertEntities(submissions));
   return {
     type: TOP_SUBMISSION_SUCCESS,
-    payload: { id, submissions: submissions.map(s => s.id) }
+    payload: { id, submissions }
   };
 };
 
@@ -116,7 +115,7 @@ export const topSubmissionsFailure = (
 
 export function getTopSubmissions(type: TopRequestType) {
   requestTop(type)
-    .then(Submissions => dispatch(topSubmissionsSuccess(type, Submissions)))
+    .then(submissions => dispatch(topSubmissionsSuccess(type, submissions)))
     .catch(err => {
       console.error(err);
       dispatch(topSubmissionsFailure(type, err));

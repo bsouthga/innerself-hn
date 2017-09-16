@@ -14,7 +14,8 @@ declare module 'innerself' {
       | null
       | string
       | number
-      | Array<void | null | boolean | string | number>>
+      | Array<void | null | boolean | string | number>
+    >
   ): string;
 
   /**

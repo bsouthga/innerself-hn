@@ -7,7 +7,7 @@ export const NavbarLink = connect((state: State, props: LinkProps) => {
   const className =
     (props.className || '') + ' navbar-link ' + (active ? 'active' : '');
 
-  return Link({ ...props, className });
+  return Link({ ...props, className, query: {} });
 });
 
 const links = [{ path: 'new' }, { path: 'show' }, { path: 'ask' }];

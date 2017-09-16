@@ -9,22 +9,13 @@ import {
   State,
   Story
 } from '../store';
-import {
-  isComment,
-  isObject,
-  isStory,
-  isString,
-  max,
-  min,
-  set
-} from '../store/util';
+import { isComment, isStory, isString, set } from '../store/util';
 import { Article } from './article';
 import { Comment } from './comment';
 import { Link } from './link';
 import { Loading } from './loading';
+import { Next, Previous, RESULTS_PER_PAGE } from './paging';
 import { ensureUser } from './user';
-
-const RESULTS_PER_PAGE = 20;
 
 export const Submitted = (state: State) => {
   const user = ensureUser(state);
@@ -75,10 +66,6 @@ export const Submitted = (state: State) => {
         .join('');
 
   const links = [
-    showPrevious && {
-      text: 'previous',
-      query: set(query, { skip: max(0, skip - RESULTS_PER_PAGE) })
-    },
     { text: `show all`, query: set(query, { type: 'all' }) },
     {
       text: `comments only`,
@@ -87,12 +74,6 @@ export const Submitted = (state: State) => {
     {
       text: `stories only`,
       query: set(query, { type: 'stories' })
-    },
-    showNext && {
-      text: 'next',
-      query: set(query, {
-        skip: min(skip + RESULTS_PER_PAGE)
-      })
     }
   ];
 
@@ -101,24 +82,19 @@ export const Submitted = (state: State) => {
       <div class="submitted-title">
         submissions by ${user.id}
       </div>
-      <div class="submitted-controls">
+      <div class="paging-controls">
+        ${showPrevious ? Previous(skip) + '|' : ''}
         ${links
-          .map(
-            link =>
-              isObject(link) &&
-              Link({
-                className:
-                  link.query.type === typesToShow &&
-                  link.text !== 'next' &&
-                  link.text !== 'previous'
-                    ? 'active'
-                    : '',
-                path,
-                ...link
-              })
+          .map(link =>
+            Link({
+              className: link.query.type === typesToShow ? 'active' : '',
+              path,
+              ...link
+            })
           )
           .filter(Boolean)
           .join('|')}
+        ${showNext ? '|' + Next(skip) : ''}
       </div>
       <div class="submitted-content">
         ${content || '(none)'}

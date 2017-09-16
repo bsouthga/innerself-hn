@@ -13,7 +13,9 @@ export type LOCATION_CHANGE_REQUEST = typeof LOCATION_CHANGE_REQUEST;
  */
 type PathKey = keyof typeof paths;
 export type RoutePath = (typeof paths)[PathKey];
-export interface Query { [key: string]: string }
+export interface Query {
+  [key: string]: string;
+}
 
 export interface RouteResult {
   path: RoutePath;
