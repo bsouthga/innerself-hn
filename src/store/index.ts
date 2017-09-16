@@ -23,7 +23,8 @@ window.dispatch = dispatch;
 export function dispatch(action: Action): void;
 export function dispatch(action: Action, toString: true): string;
 export function dispatch(action: Action, toString?: boolean) {
-  if (toString) return `'dispatch(${JSON.stringify(action)})'`;
+  if (toString)
+    return `'event.preventDefault();dispatch(${JSON.stringify(action)})'`;
   return setTimeout(originalDispatch, 0, action);
 }
 

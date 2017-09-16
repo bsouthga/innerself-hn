@@ -16,13 +16,18 @@ table td * {
   font-size: 12px;
 }
 
-a:not(.navbar-link):visited {
+a:not(.navbar-link):not(.client-link):visited {
   color: #a28ad2 !important;
 }
 
 a:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+
+a.client-link {
+  color: inherit !important;
+  text-decoration: inherit;
 }
 
 /*
