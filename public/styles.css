@@ -17,7 +17,7 @@ table td * {
 }
 
 a:not(.navbar-link):not(.client-link):visited {
-  color: #a28ad2 !important;
+  color: #a28ad2;
 }
 
 a:hover {
@@ -26,7 +26,7 @@ a:hover {
 }
 
 a.client-link {
-  color: inherit !important;
+  color: inherit;
   text-decoration: inherit;
 }
 
