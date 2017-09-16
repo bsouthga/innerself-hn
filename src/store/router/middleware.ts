@@ -1,6 +1,5 @@
 import { dispatch } from '../';
 import { Action } from '../actions';
-import { clearTopSumissions } from '../submissions';
 import { queryToString } from '../util';
 import { LOCATION_CHANGE_REQUEST, LOCATION_CHANGE_SUCCESS } from './actions';
 import { getCurrentRouteResult } from './current';

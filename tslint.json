@@ -6,6 +6,8 @@
     "interface-name": [false],
     "member-ordering": [false],
     "jsdoc-format": false,
+    "no-unused-expression": true,
+    "no-unused-variable": true,
     "object-literal-sort-keys": false,
     "curly": false,
     "no-console": [false]

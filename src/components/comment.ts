@@ -2,15 +2,15 @@ import html from 'innerself';
 import {
   connect,
   dispatch,
+  getExpanded,
   getItemById,
   getItems,
-  Item,
+  getRequesting,
   State,
   toggleExpandItem
 } from '../store';
-import { formatDate } from '../store/util';
+import { formatDate, isComment } from '../store/util';
 import { Link } from './link';
-import { Loading } from './loading';
 
 interface CommentProps {
   id: string | number;
@@ -39,7 +39,8 @@ export const Comment: (
   props: CommentProps
 ) => string = connect((state: State, props: CommentProps) => {
   const { id, child } = props;
-  const { requesting, expanded } = state.submissions;
+  const expanded = getExpanded(state);
+  const requesting = getRequesting(state);
   const item = getItemById(state, id);
 
   if (!item) {
@@ -47,7 +48,7 @@ export const Comment: (
     return '';
   }
 
-  if (item.type !== 'comment') return '';
+  if (!isComment(item)) return '';
 
   const user = !item.by
     ? '[deleted]'

@@ -1,15 +1,14 @@
 import html from 'innerself';
-import { connect, paths } from '../store';
+import { connect, getPath, paths } from '../store';
 
 import { Home } from './home';
 import { Item } from './item';
 import { Navbar } from './navbar';
 import { NotFound } from './not-found';
-import { Submitted } from './submitted';
 import { User } from './user';
 
 const Content = connect(state => {
-  switch (state.router.path) {
+  switch (getPath(state)) {
     case paths.HOME:
       return Home(state, 'top');
     case paths.NEW:

@@ -1,5 +1,5 @@
 import html from 'innerself';
-import { connect, dispatch, push, Query, RoutePath, State } from '../store';
+import { dispatch, push, Query, RoutePath } from '../store';
 
 const go = (path: RoutePath, query?: Query) =>
   dispatch(push(path, query), true);

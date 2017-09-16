@@ -1,22 +1,20 @@
 import html from 'innerself';
 import {
   dispatch,
-  getItemById,
-  getItems,
+  getQuery,
+  getRequesting,
   getUser,
   getUserById,
-  State,
-  Story
+  State
 } from '../store';
-import { formatDate } from '../store/util';
-import { Link } from './link';
+import { formatDate, isString } from '../store/util';
 import { Loading } from './loading';
 import { NotFound } from './not-found';
 import { Submitted } from './submitted';
 
 export const ensureUser = (state: State) => {
-  const { router: { query }, submissions: { requesting } } = state;
-  const { id = '' } = query || {};
+  const { id = '' } = getQuery(state);
+  const requesting = getRequesting(state);
 
   if (!id) return NotFound();
   const user = getUserById(state, id);
@@ -31,9 +29,9 @@ export const ensureUser = (state: State) => {
 
 export const User = (state: State) => {
   const user = ensureUser(state);
-  if (typeof user === 'string') return user;
-
-  return html`
+  return isString(user)
+    ? user
+    : html`
     <div>
       <table>
         <tr><td>user:</td><td>${user.id}</td></tr>

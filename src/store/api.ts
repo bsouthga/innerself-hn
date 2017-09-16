@@ -1,9 +1,6 @@
-import { dispatch } from './';
 import { Item, User } from './hn-types';
 import {
-  TOP_SUBMISSION_REQUEST,
-  TopRequestType,
-  topSubmissionsSuccess
+  TopRequestType
 } from './submissions';
 import { cachedFetch } from './util';
 

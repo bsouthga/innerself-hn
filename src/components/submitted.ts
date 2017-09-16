@@ -3,27 +3,38 @@ import {
   dispatch,
   getItemById,
   getItems,
-  getUser,
-  getUserById,
+  getPath,
+  getQuery,
+  getRequesting,
   State,
   Story
 } from '../store';
-import { formatDate, max, min, set } from '../store/util';
+import {
+  isComment,
+  isObject,
+  isStory,
+  isString,
+  max,
+  min,
+  set
+} from '../store/util';
 import { Article } from './article';
 import { Comment } from './comment';
 import { Link } from './link';
 import { Loading } from './loading';
-import { NotFound } from './not-found';
 import { ensureUser } from './user';
 
 const RESULTS_PER_PAGE = 20;
 
 export const Submitted = (state: State) => {
   const user = ensureUser(state);
-  if (typeof user === 'string') return user;
+  const requesting = getRequesting(state);
+  const query = getQuery(state);
+  const path = getPath(state);
+
+  if (isString(user)) return user;
 
   const { submitted = [] } = user;
-  const { submissions: { requesting }, router: { path, query = {} } } = state;
 
   const total = submitted.length;
   const skip = 'skip' in query ? Number(query.skip) : 0;
@@ -47,21 +58,22 @@ export const Submitted = (state: State) => {
 
   const content = need.length
     ? Loading()
-    : show.map(id => {
-        const item = getItemById(state, id)!;
-        switch (true) {
-          case item.type === 'comment': {
-            comments++;
-            return showComments ? Comment({ id }) : '';
+    : show
+        .map(id => {
+          const item = getItemById(state, id)!;
+          switch (true) {
+            case isComment(item): {
+              comments++;
+              return showComments ? Comment({ id }) : '';
+            }
+            case isStory(item): {
+              stories++;
+              return showStories ? Article({ item: item as Story }) : '';
+            }
           }
-          case item.type === 'story': {
-            stories++;
-            return showStories ? Article({ item: item as Story }) : '';
-          }
-        }
-      });
+        })
+        .join('');
 
-  const both = stories + comments;
   const links = [
     showPrevious && {
       text: 'previous',
@@ -93,7 +105,7 @@ export const Submitted = (state: State) => {
         ${links
           .map(
             link =>
-              typeof link === 'object' &&
+              isObject(link) &&
               Link({
                 className:
                   link.query.type === typesToShow &&
@@ -109,7 +121,7 @@ export const Submitted = (state: State) => {
           .join('|')}
       </div>
       <div class="submitted-content">
-        ${content}
+        ${content || '(none)'}
       </div>
     </div>
   `;

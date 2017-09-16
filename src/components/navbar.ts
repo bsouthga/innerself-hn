@@ -1,9 +1,9 @@
 import html from 'innerself';
-import { connect, paths, State } from '../store';
+import { connect, getPath, paths, State } from '../store';
 import { Link, LinkProps } from './link';
 
 export const NavbarLink = connect((state: State, props: LinkProps) => {
-  const active = state.router.path === props.path;
+  const active = getPath(state) === props.path;
   const className =
     (props.className || '') + ' navbar-link ' + (active ? 'active' : '');
 

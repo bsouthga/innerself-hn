@@ -1,11 +1,20 @@
 import { Action, init } from './actions';
+import { Comment, Item, Story } from './hn-types';
 
 const STORAGE_PREFIX = '__innerself_news__';
 const storage = localStorage;
 
+export const isStory = (item?: Item): item is Story =>
+  !!item && item.type === 'story';
+export const isComment = (item?: Item): item is Comment =>
+  !!item && item.type === 'comment';
+export const isString = (obj: any): obj is string => typeof obj === 'string';
+export const isObject = (obj: any): obj is object => typeof obj === 'object';
+
 export const max = Math.max;
 export const min = Math.min;
 export const round = Math.round;
+
 export const keys = Object.keys;
 export const set: typeof Object.assign = (...objs: any[]) =>
   Object.assign({}, ...objs);

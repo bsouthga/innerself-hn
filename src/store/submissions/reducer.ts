@@ -13,7 +13,7 @@ import {
   TOP_SUBMISSION_REQUEST,
   TOP_SUBMISSION_SUCCESS
 } from './actions';
-import { Requesting, SubmissionState } from './state';
+import { SubmissionState } from './state';
 
 const setRequestStatus = (
   state: SubmissionState,

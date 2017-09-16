@@ -1,4 +1,3 @@
-import { dispatch } from '../';
 import { Item, User } from '../hn-types';
 import { set } from '../util';
 
