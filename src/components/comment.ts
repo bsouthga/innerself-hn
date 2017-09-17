@@ -7,7 +7,12 @@ import {
   State,
   toggleExpandItem
 } from '../store';
-import { ensureRequested, formatDate, isComment } from '../store/util';
+import {
+  ensureRequested,
+  formatDate,
+  isComment,
+  replaceLinkHost
+} from '../store/util';
 import { Link } from './link';
 import { Loading } from './loading';
 
@@ -96,10 +101,10 @@ export const Comment: (
        ${user} ${commentLink} ${parentLink ? '| ' + parentLink : ''}
       </div>
       <div class="comment-text">
-        ${item.text}
+        ${replaceLinkHost(item.text)}
       </div>
       ${showChildren ? childrenToggle : ''}
-      ${children}
+      ${replaceLinkHost(children)}
     </div>
   `;
 });

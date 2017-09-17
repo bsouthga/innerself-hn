@@ -171,3 +171,9 @@ export const formatDate = (d: number) => {
     }
   }
 };
+
+const HN_HOST = /https?:&#x2F;&#x2F;news\.ycombinator\.com/g;
+const { protocol, host } = window.location;
+
+export const replaceLinkHost = (content: string = '') =>
+  content.replace(HN_HOST, `${protocol}//${host}`);
