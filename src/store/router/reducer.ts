@@ -2,17 +2,17 @@ import { set } from '../util';
 import { LOCATION_CHANGE_SUCCESS, RouterAction, RouteResult } from './actions';
 import { getCurrentRouteResult } from './current';
 
-export function router(
+export const router = (
   state: RouteResult = getCurrentRouteResult(),
-  action: RouterAction
-) {
-  switch (action.type) {
+  { type, payload }: RouterAction
+) => {
+  switch (type) {
     case LOCATION_CHANGE_SUCCESS: {
-      return set(action.payload, {
+      return set(payload, {
         previous: set(state, { previous: undefined })
       });
     }
     default:
       return state;
   }
-}
+};

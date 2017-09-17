@@ -1,10 +1,10 @@
 import html from 'innerself';
 import {
   dispatch,
+  getItemById,
   getQuery,
   getRequesting,
   getUser,
-  getUserById,
   State
 } from '../store';
 import { formatDate, isString } from '../store/util';
@@ -17,7 +17,8 @@ export const ensureUser = (state: State) => {
   const requesting = getRequesting(state);
 
   if (!id) return NotFound();
-  const user = getUserById(state, id);
+  const user = getItemById(state, id);
+  if (user && user.type !== 'user') return NotFound();
 
   if (!user) {
     if (!requesting[id]) dispatch(getUser(id));
@@ -27,19 +28,22 @@ export const ensureUser = (state: State) => {
   return user;
 };
 
+const row = (key: string, value: string | number) =>
+  `<tr><td>${key}:</td><td>${value}</td></tr>`;
+
 export const User = (state: State) => {
   const user = ensureUser(state);
   return isString(user)
     ? user
     : html`
-    <div>
-      <table>
-        <tr><td>user:</td><td>${user.id}</td></tr>
-        <tr><td>created:</td><td>${formatDate(user.created)}</td></tr>
-        <tr><td>karma:</td><td>${user.karma}</td></tr>
-        <tr><td>about:</td><td>${user.about || 'blank'}</td></tr>
-      </table>
-      ${Submitted(state)}
-    </div>
+    <table>
+      ${[
+        row('user', user.id),
+        row('created', formatDate(user.created)),
+        row('karma', user.karma),
+        row('about', user.about || 'blank')
+      ]}
+    </table>
+    ${Submitted(state)}
   `;
 };

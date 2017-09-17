@@ -9,16 +9,18 @@ import {
   State,
   Story
 } from '../store';
-import { isComment, isStory, isString, set } from '../store/util';
+import { isComment, isStory, isString, num, set } from '../store/util';
 import { Article } from './article';
 import { Comment } from './comment';
-import { Link } from './link';
+import { Link, LinkProps } from './link';
 import { Loading } from './loading';
 import { Next, Previous, RESULTS_PER_PAGE } from './paging';
 import { ensureUser } from './user';
 
-const SubmittedItem = (item: string) =>
-  `<div class="submitted-item">${item.trim()}</div>`;
+const SUBMITTED = 'submitted';
+
+const SubmittedItem = (item?: string) =>
+  !item ? '' : `<div class="${SUBMITTED}-item">${item.trim()}</div>`;
 
 export const Submitted = (state: State) => {
   const user = ensureUser(state);
@@ -31,7 +33,7 @@ export const Submitted = (state: State) => {
   const { submitted = [] } = user;
 
   const total = submitted.length;
-  const skip = 'skip' in query ? Number(query.skip) : 0;
+  const skip = 'skip' in query ? num(query.skip) : 0;
   const typesToShow = 'type' in query ? query.type : 'all';
   const show = submitted.slice(skip, skip + RESULTS_PER_PAGE);
   const need = show.filter(id => !getItemById(state, id));
@@ -59,7 +61,6 @@ export const Submitted = (state: State) => {
               return showStories ? Article({ item: item as Story }) : '';
           }
         })
-        .filter(Boolean)
         .map(SubmittedItem)
         .join('');
 
@@ -76,25 +77,28 @@ export const Submitted = (state: State) => {
   ];
 
   return html`
-    <div class="submitted">
-      <div class="submitted-title">
+    <div class="${SUBMITTED}">
+      <div class="${SUBMITTED}-title">
         submissions by ${user.id}
       </div>
       <div class="paging-controls">
         ${showPrevious ? Previous(skip) + '|' : ''}
         ${links
           .map(link =>
-            Link({
-              className: link.query.type === typesToShow ? 'active' : '',
-              path,
-              ...link
-            })
+            Link(
+              set(
+                {
+                  cls: link.query.type === typesToShow ? 'active' : '',
+                  path
+                } as LinkProps,
+                link
+              )
+            )
           )
-          .filter(Boolean)
           .join('|')}
         ${showNext ? '|' + Next(skip) : ''}
       </div>
-      <div class="submitted-content">
+      <div class="${SUBMITTED}-content">
         ${content || '(none)'}
       </div>
     </div>

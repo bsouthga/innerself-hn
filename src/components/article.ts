@@ -1,7 +1,10 @@
 import html from 'innerself';
 import { Story } from '../store';
 import { formatDate } from '../store/util';
+import { COMMENT } from './comment';
 import { Link } from './link';
+
+export const ARTICLE = 'article';
 
 export interface ArticleProps {
   item: Story;
@@ -13,20 +16,20 @@ export const Article = ({ item, index, text }: ArticleProps) => {
   const user = Link({
     path: 'user',
     text: `${item.by}`,
-    className: 'article-link',
+    cls: `${ARTICLE}-link`,
     query: { id: item.by || '' }
   });
 
   const comments = Link({
     path: 'item',
-    text: `${item.descendants || 0} comments`,
-    className: 'article-link',
+    text: `${item.descendants || 0} ${COMMENT}s`,
+    cls: `${ARTICLE}-link`,
     query: { id: `${item.id}` }
   });
 
   const indexInfo =
     typeof index !== 'undefined'
-      ? html`<div class="article-index">
+      ? html`<div class="${ARTICLE}-index">
         ${index + 1}.
       </div>`
       : '';
@@ -34,23 +37,22 @@ export const Article = ({ item, index, text }: ArticleProps) => {
   const itemText = !text
     ? ''
     : html`
-    <div class="article-text">
+    <div class="${ARTICLE}-text">
       ${item.text}
     </div>
   `;
 
   const url = item.url;
   const host = url && new URL(url).hostname;
-  const www = /^www\./;
 
   return html`
-    <div class="article">
+    <div class="${ARTICLE}">
       ${indexInfo}
       <div>
-        <a class="article-title" href="${url || '#'}">${item.title}</a>
-        ${host ? `<div class="host">(${host.replace(www, '')})</div>` : ''}
-        <div class="article-info">
-        ${item.score} points by ${user} ${formatDate(item.time)} | ${comments}
+        <a class="${ARTICLE}-title" href="${url || '#'}">${item.title}</a>
+        ${host ? `<div class="host">(${host.replace('www.', '')})</div>` : ''}
+        <div class="${ARTICLE}-info">
+          ${item.score} points by ${user} ${formatDate(item.time)} | ${comments}
         </div>
         ${itemText}
       </div>

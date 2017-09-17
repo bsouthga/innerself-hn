@@ -1,10 +1,10 @@
 import { Item, User } from '../hn-types';
-import { set } from '../util';
+import { createAction, set } from '../util';
 
-export const INSERT_ENTITIES = 'INSERT_ENTITIES';
+export const INSERT_ENTITIES = 31;
 export type INSERT_ENTITIES = typeof INSERT_ENTITIES;
 
-export type DbAction = InsertEntitesAction | InsertUserAction;
+export type DbAction = InsertEntitesAction;
 
 interface EntityHash {
   [key: string]: Item | void;
@@ -17,27 +17,7 @@ interface InsertEntitesAction {
   };
 }
 
-export const insertEntities = (items: Item[]): InsertEntitesAction => {
-  const entities = items.reduce((out, e) => set(out, { [e.id]: e }), {});
-  return {
-    type: INSERT_ENTITIES,
-    payload: {
-      entities
-    }
-  };
-};
-
-export const INSERT_USER = 'INSERT_USER';
-export type INSERT_USER = typeof INSERT_USER;
-
-interface InsertUserAction {
-  type: INSERT_USER;
-  payload: {
-    users: { [key: string]: User };
-  };
-}
-
-export const insertUser = (user: User): InsertUserAction => ({
-  type: INSERT_USER,
-  payload: { users: { [user.id]: user } }
-});
+export const insertEntities = (items: Item[]): InsertEntitesAction =>
+  createAction(INSERT_ENTITIES, {
+    entities: items.reduce((out, e) => set(out, { [e.id]: e }), {})
+  });

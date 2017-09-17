@@ -1,7 +1,8 @@
 import { State } from '../state';
 import { TopRequestType } from './actions';
 
-export const getRequesting = (state: State) => state.submissions.requesting;
-export const getExpanded = (state: State) => state.submissions.expanded;
+export const getSubmissions = (state: State) => state.submissions;
+export const getRequesting = (state: State) => getSubmissions(state).requesting;
+export const getExpanded = (state: State) => getSubmissions(state).expanded;
 export const getItemsByType = (state: State, type: TopRequestType) =>
-  state.submissions.items[type];
+  getSubmissions(state).items[type];

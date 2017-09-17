@@ -9,6 +9,7 @@
     "no-unused-expression": true,
     "no-unused-variable": true,
     "object-literal-sort-keys": false,
+    "no-object-literal-type-assertion": false,
     "curly": false,
     "no-console": [false]
   },

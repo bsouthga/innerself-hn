@@ -13,37 +13,33 @@ import {
   isComment,
   replaceLinkHost
 } from '../store/util';
+import { ARTICLE } from './article';
 import { Link } from './link';
 import { Loading } from './loading';
 
-interface CommentProps {
+export const COMMENT = 'comment';
+
+export interface CommentProps {
   id: string | number;
   child?: boolean;
   compact?: boolean;
 }
 
-interface ToggleLinkProps {
-  id: number | string;
-  children: string;
-}
-
 /**
  * toggle expanding comment children
  */
-const ToggleLink = (props: ToggleLinkProps) => html`
-  <a class="comment-expand"
-     onclick=${dispatch(toggleExpandItem(props.id), true)}>
-    ${props.children}
+const ToggleLink = (id: number | string, children: string) => html`
+  <a class="${COMMENT}-expand"
+     onclick=${dispatch(toggleExpandItem(id), true)}>
+    ${children}
   </a>
 `;
 
 /**
  * individual comment tree node, includes children
  */
-export const Comment: (
-  props: CommentProps
-) => string = connect((state: State, props: CommentProps) => {
-  const { id, child } = props;
+export const Comment = connect((state: State, props: CommentProps): string => {
+  const { id, compact, child } = props;
   const expanded = getExpanded(state);
   const item = ensureRequested(state, id);
 
@@ -54,39 +50,33 @@ export const Comment: (
     : Link({
         path: paths.USER,
         text: `${item.by}`,
-        className: 'article-link',
+        cls: `${COMMENT}-link`,
         query: { id: item.by || '' }
       });
 
   const commentLink = Link({
     path: paths.ITEM,
     text: formatDate(item.time),
-    className: 'article-link',
+    cls: `${ARTICLE}-link`,
     query: { id: `${item.id}` }
   });
 
   const parentLink =
-    props.compact &&
+    compact &&
     Link({
       path: paths.ITEM,
       text: 'parent',
-      className: 'article-link',
+      cls: `${ARTICLE}-link`,
       query: { id: `${item.parent}` }
     });
 
   const kids = item.kids || [];
 
   const childrenToggle = !expanded[id]
-    ? ToggleLink({
-        id,
-        children: `show children (${kids.length})`
-      })
-    : ToggleLink({
-        id,
-        children: `hide children`
-      });
+    ? ToggleLink(id, `show children (${kids.length})`)
+    : ToggleLink(id, `hide children`);
 
-  const showChildren = kids.length && !props.compact;
+  const showChildren = kids.length && !compact;
 
   const children = !showChildren
     ? ''
@@ -96,11 +86,11 @@ export const Comment: (
         Loading();
 
   return html`
-    <div class="comment${child ? ' comment-child' : ''}">
-      <div class="comment-info">
+    <div class="${COMMENT}${child ? COMMENT + ' -child' : ''}">
+      <div class="${COMMENT}-info">
        ${user} ${commentLink} ${parentLink ? '| ' + parentLink : ''}
       </div>
-      <div class="comment-text">
+      <div class="${COMMENT}-text">
         ${replaceLinkHost(item.text)}
       </div>
       ${showChildren ? childrenToggle : ''}

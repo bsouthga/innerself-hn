@@ -8,15 +8,13 @@ import { NotFound } from './not-found';
 import { User } from './user';
 
 const Content = connect(state => {
-  switch (getPath(state)) {
+  const path = getPath(state);
+  switch (path) {
     case paths.HOME:
-      return Home(state, 'top');
     case paths.NEW:
-      return Home(state, 'new');
     case paths.ASK:
-      return Home(state, 'ask');
     case paths.SHOW:
-      return Home(state, 'show');
+      return Home(state, path);
     case paths.ITEM:
       return Item(state);
     case paths.USER:

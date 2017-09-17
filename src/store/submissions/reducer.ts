@@ -39,14 +39,14 @@ const setRequestStatus = (
 /**
  * Main reducer for app
  */
-export function submissions(
+export const submissions = (
   state: SubmissionState = {
     requesting: {},
     expanded: {},
     items: {}
   },
   action: Action
-): SubmissionState {
+): SubmissionState => {
   switch (action.type) {
     case CLEAR_TOP_SUBMISSION: {
       return set(state, {
@@ -91,4 +91,4 @@ export function submissions(
   }
 
   return state;
-}
+};

@@ -5,8 +5,13 @@ import { Comment, Item, Story } from './hn-types';
 import { State } from './state';
 import { getItems, getRequesting } from './submissions';
 
-const STORAGE_PREFIX = '__innerself_news__';
+const STORAGE_PREFIX = '_in_';
 const storage = localStorage;
+const URLSP = URLSearchParams;
+
+export const now = Date.now;
+export const num = Number;
+export const str = (x: number | string | { toString(): string }) => `${x}`;
 
 export const isStory = (item?: Item): item is Story =>
   !!item && item.type === 'story';
@@ -58,22 +63,13 @@ export const compose = <A>(...fns: Array<(a: A) => A>): ((a: A) => A) => {
  * @param url
  * @param options
  */
-export const cachedFetch = (
-  url: string,
-  options?: RequestInit & { seconds?: number } | number | undefined
-) => {
-  let expiry = 5 * 60; // 5 min default
-  if (typeof options === 'number') {
-    expiry = options;
-    options = undefined;
-  } else if (typeof options === 'object') {
-    expiry = options.seconds || expiry;
-  }
+export const cachedFetch = (url: string, options?: RequestInit) => {
+  const expiry = 5 * 60; // 5 min default
   const cacheKey = `${STORAGE_PREFIX}${url}`;
   const cached = storage.getItem(cacheKey);
   const whenCached = storage.getItem(cacheKey + ':ts');
-  if (cached !== null && whenCached !== null) {
-    const age = (Date.now() - Number(whenCached)) / 1000;
+  if (cached && whenCached) {
+    const age = (now() - num(whenCached)) / 1000;
     if (age < expiry) {
       const response = new Response(new Blob([cached]));
       return Promise.resolve(response);
@@ -92,7 +88,7 @@ export const cachedFetch = (
           .text()
           .then(content => {
             storage.setItem(cacheKey, content);
-            storage.setItem(cacheKey + ':ts', Date.now().toString());
+            storage.setItem(cacheKey + ':ts', str(now()));
           });
       }
     }
@@ -100,20 +96,14 @@ export const cachedFetch = (
   });
 };
 
-export const queryFromString = (query: string) => {
-  const params = new URLSearchParams(query);
-  const out: { [key: string]: string } = {};
-  for (const [key, value] of params.entries()) {
-    out[key] = value;
-  }
-  return out;
-};
+export const queryFromString = (query: string) =>
+  [...new URLSP(query)].reduce((o, [k, v]) => set(o, { [k]: v }), {});
 
 export const queryToString = (query: { [key: string]: string }) => {
-  const params = new URLSearchParams();
+  const params = new URLSP();
   const paramKeys = keys(query);
   paramKeys.forEach(key => params.set(key, query[key]));
-  return params.toString();
+  return str(params);
 };
 
 /**
@@ -125,24 +115,11 @@ export const combineReducers = <S extends { [key: string]: any }>(
   const names = keys(reducers) as Array<keyof S>;
   const initAction = init();
 
-  return (state, action = initAction) => {
-    return names.reduce((out, name) => {
+  return (state, action = initAction) =>
+    names.reduce((out, name) => {
       out[name] = reducers[name](out[name], action);
       return out;
     }, state || {});
-  };
-};
-
-export const garbageCollect = () => {
-  const timestamp = new RegExp(`^${STORAGE_PREFIX}.*:ts$`, 'g');
-  const storageKeys = keys(storage).filter(k => timestamp.test(k));
-  for (const key of storageKeys) {
-    const cached = storage.getItem(key);
-    const age = (Date.now() - Number(cached)) / 1000;
-    if (age > 5 * 60) {
-      storage.removeItem(key);
-    }
-  }
 };
 
 const MINUTE = 60 * 1000;
@@ -156,9 +133,7 @@ const formatDateHelper = (diff: number, div: number, text: string) => {
 };
 
 export const formatDate = (d: number) => {
-  const time = new Date(d * 1000);
-  const now = new Date();
-  const diff = now.getTime() - time.getTime();
+  const diff = now() - d * 1000;
   switch (true) {
     case diff > DAY:
       return formatDateHelper(diff, DAY, 'day');
@@ -173,7 +148,18 @@ export const formatDate = (d: number) => {
 };
 
 const HN_HOST = /https?:&#x2F;&#x2F;news\.ycombinator\.com/g;
-const { protocol, host } = window.location;
+const { protocol, host } = location;
 
 export const replaceLinkHost = (content: string = '') =>
   content.replace(HN_HOST, `${protocol}//${host}`);
+
+/**
+ * create action from type and payload
+ */
+export const createAction = <T extends number, P extends {}>(
+  type: T,
+  payload: P
+) => ({
+  type,
+  payload
+});

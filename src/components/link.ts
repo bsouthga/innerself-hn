@@ -9,19 +9,19 @@ export interface LinkProps {
   path: RoutePath;
   text?: string;
   query?: Query;
-  className?: string;
+  cls?: string;
 }
 
 /**
  * client side routing link
  */
 export const Link = (props: LinkProps) => {
-  const { path, text, query = {}, className = '' } = props;
+  const { path, text, query = {}, cls = '' } = props;
   const queryString = queryToString(query);
   const url = path + (queryString ? `?${queryString}` : '');
 
   return html`
-      <a href="/${url}" class="${className} client-link"
+      <a href="/${url}" class="${cls} client-link"
         onclick=${go(path, query)}>
         ${text || path}
       </a>

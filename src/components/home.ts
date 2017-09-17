@@ -9,6 +9,7 @@ import {
   State,
   TopRequestType
 } from '../store';
+import { num } from '../store/util';
 import { ArticleList } from './article-list';
 import { Loading } from './loading';
 import { Next, Previous, RESULTS_PER_PAGE } from './paging';
@@ -25,7 +26,7 @@ export const Home = (state: State, type: TopRequestType) => {
     return Loading();
   }
 
-  const skip = 'skip' in query ? Number(query.skip) : 0;
+  const skip = 'skip' in query ? num(query.skip) : 0;
   const slice = stories.slice(skip, skip + RESULTS_PER_PAGE);
 
   // next, check for all items in the slice we are interested in...

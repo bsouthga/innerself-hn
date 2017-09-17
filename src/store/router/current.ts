@@ -1,23 +1,21 @@
 import { keys, queryFromString } from '../util';
 import { RoutePath, RouteResult } from './actions';
-import * as paths from './paths';
+import { ASK, COMMENTS, HOME, ITEM, NEW, SHOW, USER } from './paths';
 
-const pathKeys = keys(paths) as Array<keyof typeof paths>;
-const validPaths: string[] = pathKeys.map(k => paths[k]);
+const pathList: RoutePath[] = [NEW, COMMENTS, HOME, ITEM, SHOW, ASK, USER];
 
 /**
  * create initial route result for state
  */
-export function getCurrentRouteResult(): RouteResult {
-  const location = window.location;
+export const getCurrentRouteResult = (): RouteResult => {
   const pathname = location.pathname.slice(1);
-  const valid = validPaths.indexOf(pathname) !== -1;
+  const valid = pathList.indexOf(pathname as RoutePath) !== -1;
   const query = queryFromString(location.search);
-  const path = valid ? pathname as RoutePath : paths.HOME;
+  const path = valid ? pathname as RoutePath : HOME;
 
   if (!valid) {
     history.pushState({}, 'Innerself News', '/');
   }
 
   return { path, query };
-}
+};

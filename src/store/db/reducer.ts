@@ -1,12 +1,9 @@
 import { Action } from '../actions';
 import { set } from '../util';
-import { INSERT_ENTITIES, INSERT_USER } from './actions';
+import { INSERT_ENTITIES } from './actions';
 import { DbState } from './state';
 
-export function db(
-  state: DbState = { entities: {}, users: {} },
-  action: Action
-) {
+export const db = (state: DbState = { entities: {} }, action: Action) => {
   switch (action.type) {
     case INSERT_ENTITIES: {
       return set(state, {
@@ -14,13 +11,7 @@ export function db(
       });
     }
 
-    case INSERT_USER: {
-      return set(state, {
-        users: set(state.users, action.payload.users)
-      });
-    }
-
     default:
       return state;
   }
-}
+};

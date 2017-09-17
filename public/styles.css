@@ -110,7 +110,7 @@ a.client-link {
   margin: 20px 0px;
 }
 
-.submitted-controls .active {
+.paging-controls .active {
   text-decoration: underline;
 }
 
@@ -182,6 +182,11 @@ a.client-link {
 
 .navbar-links {
   flex: 1;
+}
+
+.navbar-link img {
+  height: 15px;
+  width: 15px;
 }
 
 /**

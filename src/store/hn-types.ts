@@ -1,7 +1,7 @@
 /**
  * https://github.com/HackerNews/API#items
  */
-export type Item = Comment | Story | Job | Poll | PollOpt;
+export type Item = Comment | Story | Job | Poll | PollOpt | User;
 
 export interface Comment {
   type: 'comment';
@@ -61,6 +61,7 @@ export interface PollOpt {
 }
 
 export interface User {
+  type: 'user';
   id: string;
   karma: number;
   created: number;

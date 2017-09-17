@@ -1,17 +1,22 @@
+import { createAction } from '../util';
 import * as paths from './paths';
 
 export type RouterAction = LocationChangeRequest | LocationChangeSuccess;
 
-export const LOCATION_CHANGE_SUCCESS = 'LOCATION_CHANGE_SUCCESS';
+/**
+ * uses 21-30
+ */
+
+export const LOCATION_CHANGE_SUCCESS = 21;
 export type LOCATION_CHANGE_SUCCESS = typeof LOCATION_CHANGE_SUCCESS;
 
-export const LOCATION_CHANGE_REQUEST = 'LOCATION_CHANGE_REQUEST';
+export const LOCATION_CHANGE_REQUEST = 22;
 export type LOCATION_CHANGE_REQUEST = typeof LOCATION_CHANGE_REQUEST;
 
 /**
  * typecheck the routes
  */
-type PathKey = keyof typeof paths;
+export type PathKey = keyof typeof paths;
 export type RoutePath = (typeof paths)[PathKey];
 export interface Query {
   [key: string]: string;
@@ -38,13 +43,8 @@ interface LocationChangeSuccess {
  * @param path route to navigate to
  * @param query optional query params
  */
-export const push = (
-  path: RoutePath,
-  query?: { [key: string]: string }
-): LocationChangeRequest => ({
-  type: LOCATION_CHANGE_REQUEST,
-  payload: {
+export const push = (path: RoutePath, query?: { [key: string]: string }) =>
+  createAction(LOCATION_CHANGE_REQUEST, {
     path,
     query
-  }
-});
+  }) as LocationChangeRequest;
