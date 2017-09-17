@@ -10,6 +10,10 @@ body {
   box-sizing: inherit;
 }
 
+pre {
+  overflow-x: auto;
+}
+
 table td,
 table td * {
   vertical-align: top;
