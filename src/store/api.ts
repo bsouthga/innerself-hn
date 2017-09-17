@@ -1,6 +1,6 @@
 import { Item, User } from './hn-types';
 import { TopRequestType } from './submissions';
-import { cachedFetch, keys, set, str } from './util';
+import { cachedFetch, keys, set } from './util';
 
 const API_BASE = 'https://hacker-news.firebaseio.com/v0/';
 

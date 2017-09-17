@@ -1,4 +1,4 @@
-import { Item, User } from '../hn-types';
+import { Item } from '../hn-types';
 import { createAction, set } from '../util';
 
 export const INSERT_ENTITIES = 31;

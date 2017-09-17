@@ -1,4 +1,4 @@
-import { keys, queryFromString } from '../util';
+import { queryFromString } from '../util';
 import { RoutePath, RouteResult } from './actions';
 import { ASK, COMMENTS, HOME, ITEM, NEW, SHOW, USER } from './paths';
 
