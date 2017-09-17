@@ -18,10 +18,23 @@ function prodPlugin() {
     onwrite() {
       const index = fs.readFileSync('./public/index.html').toString();
       const inject = fs.readFileSync('./public/inject.html').toString();
-      const replaced = index.replace('<!--__INJECT__-->', inject);
-      const input = fs.readFileSync('./public/styles.css');
+      const input = fs.readFileSync('./public/styles.css').toString();
+      const bundle = fs.readFileSync('./public/bundle.js').toString();
+
+      const replaced = index
+        .replace(
+          '<script src="./bundle.js"></script>',
+          `
+          <script>
+            ${bundle}
+          </script>
+        `
+        )
+        .replace('<!--__INJECT__-->', inject);
+
       const output = new CleanCSS({}).minify(input);
-      execSync(`rm -rf ./${DEPLOY_DIR}`);
+
+      execSync(`rm -rf ./public/bundle.js ./${DEPLOY_DIR}`);
       execSync(`mkdir -p ./${DEPLOY_DIR}`);
       execSync(`cp ./public/* ./${DEPLOY_DIR}`);
       execSync(`rm ./${DEPLOY_DIR}/inject.html`);
