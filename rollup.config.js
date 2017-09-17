@@ -8,6 +8,7 @@ import * as CleanCSS from 'clean-css';
 import { minify } from 'uglify-es';
 
 const prod = process.env.NODE_ENV === 'production';
+const DEPLOY_DIR = 'public-s3';
 
 function prodPlugin() {
   return {
@@ -16,17 +17,16 @@ function prodPlugin() {
     },
     onwrite() {
       const index = fs.readFileSync('./public/index.html').toString();
-      const redirect = fs.readFileSync('./public/redirect.html').toString();
-      const replaced = index.replace('<!--__REDIRECT__-->', redirect);
+      const inject = fs.readFileSync('./public/inject.html').toString();
+      const replaced = index.replace('<!--__INJECT__-->', inject);
       const input = fs.readFileSync('./public/styles.css');
       const output = new CleanCSS({}).minify(input);
-      execSync('rm -rf ./public-gh-pages');
-      execSync('mkdir -p ./public-gh-pages');
-      execSync('cp ./public/* ./public-gh-pages');
-      execSync('rm ./public-gh-pages/redirect.html');
-      execSync('touch ./public-gh-pages/.nojekyll');
-      fs.writeFileSync('./public-gh-pages/index.html', replaced);
-      fs.writeFileSync('./public-gh-pages/styles.css', output.styles);
+      execSync(`rm -rf ./${DEPLOY_DIR}`);
+      execSync(`mkdir -p ./${DEPLOY_DIR}`);
+      execSync(`cp ./public/* ./${DEPLOY_DIR}`);
+      execSync(`rm ./${DEPLOY_DIR}/inject.html`);
+      fs.writeFileSync(`./${DEPLOY_DIR}/index.html`, replaced);
+      fs.writeFileSync(`./${DEPLOY_DIR}/styles.css`, output.styles);
     }
   };
 }
