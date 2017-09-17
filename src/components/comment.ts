@@ -86,7 +86,7 @@ export const Comment = connect((state: State, props: CommentProps): string => {
         Loading();
 
   return html`
-    <div class="${COMMENT}${child ? COMMENT + ' -child' : ''}">
+    <div class="${COMMENT} ${child ? COMMENT + '-child' : ''}">
       <div class="${COMMENT}-info">
        ${user} ${commentLink} ${parentLink ? '| ' + parentLink : ''}
       </div>
