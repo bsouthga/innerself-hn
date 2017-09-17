@@ -12,7 +12,7 @@ import {
 import { num } from '../store/util';
 import { ArticleList } from './article-list';
 import { Loading } from './loading';
-import { Next, Previous, RESULTS_PER_PAGE } from './paging';
+import { Page, RESULTS_PER_PAGE } from './page';
 
 export const Home = (state: State, type: TopRequestType) => {
   const stories = getItemsByType(state, type);
@@ -42,9 +42,9 @@ export const Home = (state: State, type: TopRequestType) => {
     return `
       ${ArticleList({ items: slice, skip })}
       <div class="paging-controls">
-        ${showPrevious ? Previous(skip) : ''}
+        ${showPrevious ? Page('previous', skip) : ''}
         ${showPrevious && showNext ? ' | ' : ''}
-        ${showNext ? Next(skip) : ''}
+        ${showNext ? Page('next', skip) : ''}
       </div>
     `;
   }

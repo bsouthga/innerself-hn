@@ -14,7 +14,7 @@ import { Article } from './article';
 import { Comment } from './comment';
 import { Link, LinkProps } from './link';
 import { Loading } from './loading';
-import { Next, Previous, RESULTS_PER_PAGE } from './paging';
+import { Page, RESULTS_PER_PAGE } from './page';
 import { ensureUser } from './user';
 
 const SUBMITTED = 'submitted';
@@ -82,7 +82,7 @@ export const Submitted = (state: State) => {
         submissions by ${user.id}
       </div>
       <div class="paging-controls">
-        ${showPrevious ? Previous(skip) + '|' : ''}
+        ${showPrevious ? Page('previous', skip) + '|' : ''}
         ${links
           .map(link =>
             Link(
@@ -96,7 +96,7 @@ export const Submitted = (state: State) => {
             )
           )
           .join('|')}
-        ${showNext ? '|' + Next(skip) : ''}
+        ${showNext ? '|' + Page('next', skip) : ''}
       </div>
       <div class="${SUBMITTED}-content">
         ${content || '(none)'}
