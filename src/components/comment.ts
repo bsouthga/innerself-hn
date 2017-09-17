@@ -50,7 +50,7 @@ export const Comment = connect((state: State, props: CommentProps): string => {
     : Link({
         path: paths.USER,
         text: `${item.by}`,
-        cls: `${COMMENT}-link`,
+        cls: `${ARTICLE}-link`,
         query: { id: item.by || '' }
       });
 
