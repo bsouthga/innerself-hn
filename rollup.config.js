@@ -21,25 +21,24 @@ function prodPlugin() {
       const input = fs.readFileSync('./public/styles.css').toString();
       const bundle = fs.readFileSync('./public/bundle.js').toString();
 
+      const output = new CleanCSS({}).minify(input);
+
       const replaced = index
         .replace(
           '<script src="./bundle.js"></script>',
-          `
-          <script>
-            ${bundle}
-          </script>
-        `
+          `<script>${bundle}</script>`
+        )
+        .replace(
+          '<link rel="stylesheet" href="./styles.css">',
+          `<style>${output.styles}</style>`
         )
         .replace('<!--__INJECT__-->', inject);
-
-      const output = new CleanCSS({}).minify(input);
 
       execSync(`rm -rf ./public/bundle.js ./${DEPLOY_DIR}`);
       execSync(`mkdir -p ./${DEPLOY_DIR}`);
       execSync(`cp ./public/* ./${DEPLOY_DIR}`);
-      execSync(`rm ./${DEPLOY_DIR}/inject.html`);
+      execSync(`rm ./${DEPLOY_DIR}/inject.html ./${DEPLOY_DIR}/styles.css`);
       fs.writeFileSync(`./${DEPLOY_DIR}/index.html`, replaced);
-      fs.writeFileSync(`./${DEPLOY_DIR}/styles.css`, output.styles);
     }
   };
 }
