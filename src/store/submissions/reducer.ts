@@ -1,5 +1,5 @@
 import { Action } from '../actions';
-import { set } from '../util';
+import { now, set } from '../util';
 import {
   CLEAR_TOP_SUBMISSION,
   GET_ITEM_FAILURE,
@@ -15,6 +15,15 @@ import {
 } from './actions';
 import { SubmissionState } from './state';
 
+const getIds = (payload: {
+  id?: string | number;
+  ids?: Array<string | number>;
+}) => {
+  const { id, ids } = payload;
+  const idList = ids || (typeof id !== 'undefined' && [id]) || [];
+  return idList;
+};
+
 const setRequestStatus = (
   state: SubmissionState,
   action: {
@@ -25,9 +34,8 @@ const setRequestStatus = (
   },
   status: boolean
 ) => {
-  const { id, ids } = action.payload;
-  if (!id && !ids) return state;
-  const idList = ids || (id && [id]) || [];
+  const idList = getIds(action.payload);
+  if (!idList.length) return state;
   return set(state, {
     requesting: set(
       state.requesting,
@@ -43,7 +51,8 @@ export const submissions = (
   state: SubmissionState = {
     requesting: {},
     expanded: {},
-    items: {}
+    items: {},
+    failed: {}
   },
   action: Action
 ): SubmissionState => {
@@ -64,11 +73,22 @@ export const submissions = (
         })
       });
     }
+    case GET_ITEM_FAILURE:
+    case GET_USER_FAILURE:
     case TOP_SUBMISSION_FAILURE: {
+      const idList = getIds(action.payload);
+      if (!idList) return state;
       return set(setRequestStatus(state, action, false), {
-        error: action.payload.error
+        failed: idList.reduce(
+          (out, id) =>
+            set(state, {
+              [id]: now()
+            }),
+          state.failed
+        )
       });
     }
+
     case GET_USER_REQUEST:
     case GET_ITEM_REQUEST: {
       return setRequestStatus(state, action, true);

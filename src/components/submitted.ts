@@ -5,11 +5,17 @@ import {
   getItems,
   getPath,
   getQuery,
-  getRequesting,
   State,
   Story
 } from '../store';
-import { isComment, isStory, isString, num, set } from '../store/util';
+import {
+  isComment,
+  isStory,
+  isString,
+  num,
+  set,
+  shouldRequest
+} from '../store/util';
 import { Article } from './article';
 import { Comment } from './comment';
 import { Link, LinkProps } from './link';
@@ -24,7 +30,6 @@ const SubmittedItem = (item?: string) =>
 
 export const Submitted = (state: State) => {
   const user = ensureUser(state);
-  const requesting = getRequesting(state);
   const query = getQuery(state);
   const path = getPath(state);
 
@@ -39,7 +44,7 @@ export const Submitted = (state: State) => {
   const need = show.filter(id => !getItemById(state, id));
 
   if (need.length) {
-    const request = need.filter(id => !requesting[id]);
+    const request = need.filter(id => shouldRequest(state, id));
     if (request.length) dispatch(getItems(request));
   }
 

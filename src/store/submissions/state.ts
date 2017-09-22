@@ -5,6 +5,7 @@ export interface Requesting {
 }
 
 export interface SubmissionState {
+  failed: { [key: string]: number };
   items: { [K in TopRequestType]?: number[] };
   error?: Error;
   /**

@@ -3,15 +3,21 @@ import { Action, init } from './actions';
 import { getItemById } from './db';
 import { Comment, Item, Story } from './hn-types';
 import { State } from './state';
-import { getItems, getRequesting } from './submissions';
+import { getFailed, getItems, getRequesting } from './submissions';
 
 const STORAGE_PREFIX = '_in_';
 const storage = localStorage;
 const URLSP = URLSearchParams;
+const MINUTE = 6e4;
+const HOUR = 60 * MINUTE;
+const DAY = 24 * HOUR;
+const HN_HOST = /https?:&#x2F;&#x2F;news\.ycombinator\.com/g;
+const { protocol, host } = location;
 
 export const now = Date.now;
 export const num = Number;
 export const str = (x: number | string | { toString(): string }) => `${x}`;
+export const lastMinute = () => now() - MINUTE;
 
 export const isStory = (item?: Item): item is Story =>
   !!item && item.type === 'story';
@@ -29,16 +35,27 @@ export const set: typeof Object.assign = (...objs: any[]) =>
   Object.assign({}, ...objs);
 
 /**
+ * check if we should make a request for id...
+ *
+ * @param state
+ * @param id
+ */
+export const shouldRequest = (state: State, id: string | number) => {
+  const requesting = getRequesting(state);
+  const failed = getFailed(state);
+  return !requesting[id] && (!failed[id] || failed[id] < lastMinute());
+};
+
+/**
  *
  * check if item exists in state, request if necessary
  *
  */
 export const ensureRequested = (state: State, id: string | number) => {
   const item = getItemById(state, id);
-  const requesting = getRequesting(state);
 
   if (!item) {
-    if (!requesting[id]) dispatch(getItems([id]));
+    if (shouldRequest(state, id)) dispatch(getItems([id]));
   } else {
     return item;
   }
@@ -122,10 +139,6 @@ export const combineReducers = <S extends { [key: string]: any }>(
     }, state || {});
 };
 
-const MINUTE = 60 * 1000;
-const HOUR = 60 * MINUTE;
-const DAY = 24 * HOUR;
-
 const plural = (n: number) => (n === 1 ? ' ago' : 's ago');
 const formatDateHelper = (diff: number, div: number, text: string) => {
   const v = round(diff / div);
@@ -146,9 +159,6 @@ export const formatDate = (d: number) => {
     }
   }
 };
-
-const HN_HOST = /https?:&#x2F;&#x2F;news\.ycombinator\.com/g;
-const { protocol, host } = location;
 
 export const replaceLinkHost = (content: string = '') =>
   content.replace(HN_HOST, `${protocol}//${host}`);

@@ -1,13 +1,14 @@
 import html from 'innerself';
 import {
   dispatch,
+  getFailed,
   getItemById,
   getQuery,
   getRequesting,
   getUser,
   State
 } from '../store';
-import { formatDate, isString } from '../store/util';
+import { formatDate, isString, lastMinute } from '../store/util';
 import { Loading } from './loading';
 import { NotFound } from './not-found';
 import { Submitted } from './submitted';
@@ -15,13 +16,15 @@ import { Submitted } from './submitted';
 export const ensureUser = (state: State) => {
   const { id = '' } = getQuery(state);
   const requesting = getRequesting(state);
+  const failed = getFailed(state);
 
   if (!id) return NotFound();
   const user = getItemById(state, id);
   if (user && user.type !== 'user') return NotFound();
 
   if (!user) {
-    if (!requesting[id]) dispatch(getUser(id));
+    if (!requesting[id] && (!failed[id] || failed[id] < lastMinute()))
+      dispatch(getUser(id));
     return Loading();
   }
 

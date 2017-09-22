@@ -4,25 +4,23 @@ import {
   getItems,
   getItemsByType,
   getQuery,
-  getRequesting,
   getTopSubmissions,
   State,
   TopRequestType
 } from '../store';
-import { num } from '../store/util';
+import { num, shouldRequest } from '../store/util';
 import { ArticleList } from './article-list';
 import { Loading } from './loading';
 import { Page, RESULTS_PER_PAGE } from './page';
 
 export const Home = (state: State, type: TopRequestType) => {
   const stories = getItemsByType(state, type);
-  const requesting = getRequesting(state);
   const query = getQuery(state);
 
   // if we don't yet have the submissions,
   // dispatch (async) event to get them...
   if (!stories) {
-    if (!requesting[type]) dispatch(getTopSubmissions(type));
+    if (shouldRequest(state, type)) dispatch(getTopSubmissions(type));
     return Loading();
   }
 
@@ -32,7 +30,7 @@ export const Home = (state: State, type: TopRequestType) => {
   // next, check for all items in the slice we are interested in...
   const need = slice.filter(id => !getItemById(state, id));
   if (need.length) {
-    const request = need.filter(id => !requesting[id]);
+    const request = need.filter(id => shouldRequest(state, id));
     if (request.length) dispatch(getItems(request));
     return Loading();
   } else {
