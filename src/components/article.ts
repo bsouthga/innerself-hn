@@ -20,6 +20,13 @@ export const Article = ({ item, index, text }: ArticleProps) => {
     query: { id: item.by || '' }
   });
 
+  const itemLink = Link({
+    path: 'item',
+    text: `${item.title}`,
+    cls: `${ARTICLE}-title`,
+    query: { id: `${item.id}` }
+  });
+
   const comments = Link({
     path: 'item',
     text: `${item.descendants || 0} ${COMMENT}s`,
@@ -44,13 +51,16 @@ export const Article = ({ item, index, text }: ArticleProps) => {
 
   const url = item.url;
   const host = url && new URL(url).hostname;
+  const link = !url
+    ? itemLink
+    : `<a class="${ARTICLE}-title" href="${url}">${item.title}</a> ` +
+      (host ? `<div class="host">(${host.replace('www.', '')})</div>` : '');
 
   return html`
     <div class="${ARTICLE}">
       ${indexInfo}
       <div>
-        <a class="${ARTICLE}-title" href="${url || '#'}">${item.title}</a>
-        ${host ? `<div class="host">(${host.replace('www.', '')})</div>` : ''}
+        ${link}
         <div class="${ARTICLE}-info">
           ${item.score} points by ${user} ${formatDate(item.time)} | ${comments}
         </div>
