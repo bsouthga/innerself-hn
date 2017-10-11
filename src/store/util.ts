@@ -6,7 +6,7 @@ import { State } from './state';
 import { getFailed, getItems, getRequesting } from './submissions';
 
 const STORAGE_PREFIX = '_in_';
-const TS_REGEX = new RegExp(`^${STORAGE_PREFIX}.*:ts$`);
+const TS_REGEX = new RegExp(['^', STORAGE_PREFIX, '.*:ts$'].join(''));
 const storage = localStorage;
 const URLSP = URLSearchParams;
 const MINUTE = 6e4;
