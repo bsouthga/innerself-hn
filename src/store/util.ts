@@ -6,6 +6,7 @@ import { State } from './state';
 import { getFailed, getItems, getRequesting } from './submissions';
 
 const STORAGE_PREFIX = '_in_';
+const TS_REGEX = new RegExp(`^${STORAGE_PREFIX}.*:ts$`);
 const storage = localStorage;
 const URLSP = URLSearchParams;
 const MINUTE = 6e4;
@@ -13,6 +14,18 @@ const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 const HN_HOST = /https?:&#x2F;&#x2F;news\.ycombinator\.com/g;
 const { protocol, host } = location;
+const expiry = MINUTE; // 1 min default
+
+/**
+ *
+ *
+ * extract globals into exports for minifier
+ *
+ *
+ */
+
+export const tick = <T extends (...args: any[]) => any>(fn: T, time = 0) =>
+  setTimeout(fn, time);
 
 export const now = Date.now;
 export const num = Number;
@@ -81,12 +94,11 @@ export const compose = <A>(...fns: Array<(a: A) => A>): ((a: A) => A) => {
  * @param options
  */
 export const cachedFetch = (url: string, options?: RequestInit) => {
-  const expiry = 5 * 60; // 5 min default
   const cacheKey = `${STORAGE_PREFIX}${url}`;
   const cached = storage.getItem(cacheKey);
   const whenCached = storage.getItem(cacheKey + ':ts');
   if (cached && whenCached) {
-    const age = (now() - num(whenCached)) / 1000;
+    const age = now() - num(whenCached);
     if (age < expiry) {
       const response = new Response(new Blob([cached]));
       return Promise.resolve(response);
@@ -173,3 +185,59 @@ export const createAction = <T extends number, P extends {}>(
   type,
   payload
 });
+
+/**
+ * simple debounce
+ *
+ * @param fn no-args function
+ * @param time debounce interval
+ */
+export const debounce = <F extends () => any>(fn: F, time = 1000) => {
+  let timeout = 0;
+  return () => {
+    clearTimeout(timeout);
+    timeout = tick(fn, time);
+  };
+};
+
+/**
+ * remove expired local storage items
+ */
+export const pruneLocalStorage = () => {
+  const storageKeys = keys(storage);
+  const remove: string[] = [];
+  const date = now() - expiry * 1000;
+  let i = storageKeys.length;
+
+  while (i--) {
+    const key = storageKeys[i];
+    if (TS_REGEX.test(key)) {
+      const ts = storage.getItem(key);
+      if (Number(ts) < date) {
+        remove.push(key);
+        if (remove.length > 100) break;
+      }
+    }
+  }
+
+  if (remove.length) {
+    let r = remove.length;
+    while (r--) {
+      const key = remove[r];
+      storage.removeItem(key);
+      storage.removeItem(key.replace(':ts', ''));
+    }
+    tick(pruneLocalStorage);
+  }
+};
+
+/**
+ * create middleware to prune local storage on actions
+ */
+export const createPruneMiddleware = () => {
+  const debounced = debounce(pruneLocalStorage);
+  return (action: Action) => {
+    debounced();
+    return action;
+  };
+};
