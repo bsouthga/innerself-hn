@@ -1,5 +1,5 @@
 import html from 'innerself';
-import { connect, getPath, paths, State } from '../store';
+import { connect, getPath, paths, RoutePath, State } from '../store';
 import { set } from '../store/util';
 import { Link, LinkProps } from './link';
 
@@ -10,7 +10,11 @@ export const NavbarLink = connect((state: State, props: LinkProps) => {
   return Link(set(props, { cls, query: {} }));
 });
 
-const links = [{ path: 'new' }, { path: 'show' }, { path: 'ask' }];
+const links: Array<{ path: RoutePath }> = [
+  { path: 'new' },
+  { path: 'show' },
+  { path: 'ask' }
+];
 
 export const Navbar = () => html`
   <div class="navbar">

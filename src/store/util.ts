@@ -32,9 +32,9 @@ export const num = Number;
 export const str = (x: number | string | { toString(): string }) => `${x}`;
 export const lastMinute = () => now() - MINUTE;
 
-export const isStory = (item?: Item): item is Story =>
+export const isStory = (item?: Item | void): item is Story =>
   !!item && item.type === 'story';
-export const isComment = (item?: Item): item is Comment =>
+export const isComment = (item?: Item | void): item is Comment =>
   !!item && item.type === 'comment';
 export const isString = (obj: any): obj is string => typeof obj === 'string';
 export const isObject = (obj: any): obj is object => typeof obj === 'object';
@@ -138,7 +138,7 @@ export const queryToString = (query: { [key: string]: string }) => {
 /**
  * combine reducers (like redux)
  */
-export const combineReducers = <S extends { [key: string]: any }>(
+export const combineReducers = <S>(
   reducers: { [K in keyof S]: (state: S[K], action: Action) => S[K] }
 ): ((state: S, action?: Action) => S) => {
   const names = keys(reducers) as Array<keyof S>;
