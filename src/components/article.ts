@@ -1,4 +1,4 @@
-import html from 'innerself';
+import html from '../innerself';
 import { Story } from '../store';
 import { formatDate } from '../store/util';
 import { COMMENT } from './comment';

@@ -4,3 +4,4 @@ public/bundle.js*
 dist
 **/*.DS_Store
 public-s3
+closure_output

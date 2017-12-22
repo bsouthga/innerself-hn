@@ -1,4 +1,4 @@
-import html from 'innerself';
+import html from '../innerself';
 import {
   connect,
   dispatch,

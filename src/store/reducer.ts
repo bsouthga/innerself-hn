@@ -9,7 +9,10 @@ import { db } from './db';
 import { router } from './router';
 import { submissions } from './submissions';
 
-export type Reducer = (state: State, action?: Action) => State;
+export type Reducer = (
+  state: State | undefined,
+  action: Action | undefined
+) => State;
 
 /**
  * Main reducer for app

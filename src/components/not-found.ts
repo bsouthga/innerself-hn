@@ -1,3 +1,3 @@
-import html from 'innerself';
+import html from '../innerself';
 
 export const NotFound = () => html`Oops, not found...`;

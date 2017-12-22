@@ -1,4 +1,4 @@
-import html from 'innerself';
+import html from '../innerself';
 import { connect, getPath, paths, RoutePath, State } from '../store';
 import { set } from '../store/util';
 import { Link, LinkProps } from './link';

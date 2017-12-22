@@ -6,5 +6,5 @@ import { compose, createPruneMiddleware } from './util';
 
 const middleware = compose(createRouterMiddleware(), createPruneMiddleware());
 
-export default (reducer: Reducer) => (state: State, action?: Action) =>
+export default (reducer: Reducer) => (state?: State, action?: Action) =>
   reducer(state, action && middleware(action));

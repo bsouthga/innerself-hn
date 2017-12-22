@@ -40,9 +40,9 @@ export const Home = (state: State, type: TopRequestType) => {
     return `
       ${ArticleList({ items: slice, skip })}
       <div class="paging-controls">
-        ${showPrevious ? Page('previous', skip) : ''}
+        ${showPrevious ? Page({ direction: 'previous', skip }) : ''}
         ${showPrevious && showNext ? ' | ' : ''}
-        ${showNext ? Page('next', skip) : ''}
+        ${showNext ? Page({ direction: 'next', skip }) : ''}
       </div>
     `;
   }

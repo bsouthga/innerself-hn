@@ -1,4 +1,4 @@
-import html from 'innerself';
+import html from '../innerself';
 import { dispatch, push, Query, RoutePath } from '../store';
 import { queryToString } from '../store/util';
 

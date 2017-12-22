@@ -1,4 +1,4 @@
-import { createStore } from 'innerself';
+import { createStore } from '../innerself';
 import { Action } from './actions';
 import middleware from './middleware';
 import { reducer } from './reducer';

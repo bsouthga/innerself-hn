@@ -1,4 +1,4 @@
-import html from 'innerself';
+import html from '../innerself';
 import { connect, getItemById, State, Story } from '../store';
 import { isStory } from '../store/util';
 import { Article, ARTICLE } from './article';

@@ -1,4 +1,4 @@
-import html from 'innerself';
+import html from '../innerself';
 import {
   dispatch,
   getItemById,
@@ -87,7 +87,7 @@ export const Submitted = (state: State) => {
         submissions by ${user.id}
       </div>
       <div class="paging-controls">
-        ${showPrevious ? Page('previous', skip) + '|' : ''}
+        ${showPrevious ? Page({ direction: 'previous', skip }) + '|' : ''}
         ${links
           .map(link =>
             Link(
@@ -101,7 +101,7 @@ export const Submitted = (state: State) => {
             )
           )
           .join('|')}
-        ${showNext ? '|' + Page('next', skip) : ''}
+        ${showNext ? '|' + Page({ direction: 'next', skip }) : ''}
       </div>
       <div class="${SUBMITTED}-content">
         ${content || '(none)'}

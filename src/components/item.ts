@@ -1,4 +1,4 @@
-import html from 'innerself';
+import html from '../innerself';
 import { getQuery, State } from '../store';
 import { ensureRequested, isComment, isStory } from '../store/util';
 import { Article } from './article';

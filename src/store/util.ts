@@ -138,17 +138,21 @@ export const queryToString = (query: { [key: string]: string }) => {
 /**
  * combine reducers (like redux)
  */
-export const combineReducers = <S>(
-  reducers: { [K in keyof S]: (state: S[K], action: Action) => S[K] }
-): ((state: S, action?: Action) => S) => {
+export const combineReducers = <S extends {}>(
+  reducers: {
+    [K in keyof S]: (state: S[K] | undefined, action: Action) => S[K]
+  }
+): ((state?: S, action?: Action) => S) => {
   const names = keys(reducers) as Array<keyof S>;
   const initAction = init();
 
-  return (state, action = initAction) =>
-    names.reduce((out, name) => {
-      out[name] = reducers[name](out[name], action);
-      return out;
-    }, state || {});
+  return (state, action = initAction) => {
+    const newState = {} as S;
+    for (const name of names) {
+      newState[name] = reducers[name](state && state[name], action);
+    }
+    return newState;
+  };
 };
 
 const plural = (n: number) => (n === 1 ? ' ago' : 's ago');

@@ -5,19 +5,24 @@
   "main": "index.js",
   "scripts": {
     "rollup": "rollup -c ./rollup.config.js",
-    "test":
-      "prettier --single-quote --write './src/**/*.ts' && tslint --project ./ --fix --type-check './src/**/*.ts'",
+    "test": "prettier --single-quote --write './src/**/*.ts' && tslint --project ./ --fix --type-check './src/**/*.ts'",
     "start": "npm run rollup -- -w",
     "build": "export NODE_ENV='production' && npm run rollup",
     "sync": "aws s3 sync ./public-s3/ s3://innerself-hn.com",
     "deploy": "npm run build && npm run sync",
     "tsc": "tsc"
   },
-  "keywords": ["innerself", "hacker", "news", "hn"],
+  "keywords": [
+    "innerself",
+    "hacker",
+    "news",
+    "hn"
+  ],
   "author": "bsouthga@gmail.com",
   "license": "MIT",
   "devDependencies": {
     "clean-css": "^4.1.9",
+    "google-closure-compiler": "^20171203.0.0",
     "prettier": "^1.9.2",
     "rollup": "^0.52.3",
     "rollup-plugin-livereload": "^0.6.0",

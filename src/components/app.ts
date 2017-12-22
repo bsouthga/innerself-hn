@@ -1,4 +1,4 @@
-import html from 'innerself';
+import html from '../innerself';
 import { connect, getPath, paths } from '../store';
 
 import { Home } from './home';
@@ -7,7 +7,7 @@ import { Navbar } from './navbar';
 import { NotFound } from './not-found';
 import { User } from './user';
 
-const Content = connect(state => {
+const Content = connect((state, props = {}) => {
   const path = getPath(state);
   switch (path) {
     case paths.HOME:
@@ -29,7 +29,7 @@ export const App = () => html`
   <div class="container">
     ${Navbar()}
     <div class="content">
-      ${Content()}
+      ${Content({})}
     </div>
     <div class="footer">
       <a href="https://bsou.io">Ben Southgate</a> | 2017

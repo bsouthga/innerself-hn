@@ -5,18 +5,18 @@ import { Link } from './link';
 export const RESULTS_PER_PAGE = 20;
 
 export const Page = connect(
-  (state: State, direction: 'next' | 'previous', skip: number) => {
+  (state: State, props: { direction: 'next' | 'previous'; skip: number }) => {
     const query = getQuery(state);
     const path = getPath(state);
 
     return Link({
       path,
-      text: direction,
+      text: props.direction,
       query: set(query, {
         skip:
-          direction === 'next'
-            ? skip + RESULTS_PER_PAGE
-            : max(0, skip - RESULTS_PER_PAGE)
+          props.direction === 'next'
+            ? props.skip + RESULTS_PER_PAGE
+            : max(0, props.skip - RESULTS_PER_PAGE)
       })
     });
   }
