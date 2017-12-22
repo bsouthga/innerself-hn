@@ -572,10 +572,6 @@ ini@~1.3.0:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.4.tgz#0537cb79daf59b59a1a517dff706c86ec039162e"
 
-innerself@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/innerself/-/innerself-0.1.1.tgz#36ddf1292f8d7871b19db6e4a492d627769fc73d"
-
 is-binary-path@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/is-binary-path/-/is-binary-path-1.0.1.tgz#75f16642b480f187a711c814161fd3a4a7655898"
