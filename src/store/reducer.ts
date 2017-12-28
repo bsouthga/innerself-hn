@@ -2,9 +2,6 @@ import { Action } from './actions';
 import { State } from './state';
 import { combineReducers } from './util';
 
-/**
- * individual property reducers
- */
 import { db } from './db';
 import { router } from './router';
 import { submissions } from './submissions';

@@ -1,17 +1,8 @@
+import { ActionTypes } from '../action-types';
 import { createAction } from '../util';
 import * as paths from './paths';
 
 export type RouterAction = LocationChangeRequest | LocationChangeSuccess;
-
-/**
- * uses 21-30
- */
-
-export const LOCATION_CHANGE_SUCCESS = 21;
-export type LOCATION_CHANGE_SUCCESS = typeof LOCATION_CHANGE_SUCCESS;
-
-export const LOCATION_CHANGE_REQUEST = 22;
-export type LOCATION_CHANGE_REQUEST = typeof LOCATION_CHANGE_REQUEST;
 
 /**
  * typecheck the routes
@@ -28,12 +19,12 @@ export interface RouteResult {
 }
 
 interface LocationChangeRequest {
-  type: LOCATION_CHANGE_REQUEST;
+  type: ActionTypes.LOCATION_CHANGE_REQUEST;
   payload: RouteResult;
 }
 
 interface LocationChangeSuccess {
-  type: LOCATION_CHANGE_SUCCESS;
+  type: ActionTypes.LOCATION_CHANGE_SUCCESS;
   payload: RouteResult;
 }
 
@@ -44,7 +35,7 @@ interface LocationChangeSuccess {
  * @param query optional query params
  */
 export const push = (path: RoutePath, query?: { [key: string]: string }) =>
-  createAction(LOCATION_CHANGE_REQUEST, {
+  createAction(ActionTypes.LOCATION_CHANGE_REQUEST, {
     path,
     query
   }) as LocationChangeRequest;

@@ -1,11 +1,11 @@
+import { ActionTypes } from '../action-types';
 import { Action } from '../actions';
 import { set } from '../util';
-import { INSERT_ENTITIES } from './actions';
 import { DbState } from './state';
 
 export const db = (state: DbState = { entities: {} }, action: Action) => {
   switch (action.type) {
-    case INSERT_ENTITIES: {
+    case ActionTypes.INSERT_ENTITIES: {
       return set(state, {
         entities: set(state.entities, action.payload.entities)
       });

@@ -1,0 +1,32 @@
+/**
+ * enum of all actions in app
+ */
+export const enum ActionTypes {
+  INIT,
+
+  /**
+   * submissions
+   */
+  TOP_SUBMISSION_REQUEST,
+  TOP_SUBMISSION_SUCCESS,
+  TOP_SUBMISSION_FAILURE,
+  CLEAR_TOP_SUBMISSION,
+  GET_ITEM_REQUEST,
+  GET_ITEM_SUCCESS,
+  GET_ITEM_FAILURE,
+  TOGGLE_EXPAND_ITEM,
+  GET_USER_REQUEST,
+  GET_USER_SUCCESS,
+  GET_USER_FAILURE,
+
+  /**
+   * router
+   */
+  LOCATION_CHANGE_SUCCESS,
+  LOCATION_CHANGE_REQUEST,
+
+  /**
+   * db
+   */
+  INSERT_ENTITIES
+}
