@@ -126,7 +126,7 @@ export const cachedFetch = (url: string, options?: RequestInit) => {
 };
 
 export const queryFromString = (query: string) =>
-  [...urlsp(query)].reduce((o, [k, v]) => set(o, { [k]: v }), {});
+  Array.from(urlsp(query)).reduce((o, [k, v]) => set(o, { [k]: v }), {});
 
 export const queryToString = (query: { [key: string]: string }) => {
   const params = urlsp();
