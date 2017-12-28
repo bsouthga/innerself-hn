@@ -1,5 +1,5 @@
 import html from 'innerself';
-import { connect, getItemById, State, Story } from '../store';
+import { connect, getItemById, State } from '../store';
 import { isStory } from '../store/util';
 import { Article, ARTICLE } from './article';
 
@@ -10,17 +10,17 @@ interface ArticleProps {
 
 export const ArticleList = connect((state: State, props: ArticleProps) => {
   const { items, skip = 0 } = props;
-  const stories = items
-    .map(id => getItemById(state, id))
-    .filter(isStory) as Story[];
+  const stories = items.map(id => getItemById(state, id)).filter(isStory);
 
   return html`
     <div class="${ARTICLE}-list">
-      ${!stories.length
-        ? '(no items)'
-        : stories.map((item, index) =>
-            Article({ item, index: index + skip || 0 })
-          )}
+      ${
+        !stories.length
+          ? '(no items)'
+          : stories.map((item, index) =>
+              Article({ item, index: index + skip || 0 })
+            )
+      }
     </div>
   `;
 });

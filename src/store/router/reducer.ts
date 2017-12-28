@@ -1,15 +1,16 @@
 import { ActionTypes } from '../action-types';
+import { Action } from '../actions';
 import { set } from '../util';
-import { RouterAction, RouteResult } from './actions';
+import { RouteResult } from './actions';
 import { getCurrentRouteResult } from './current';
 
 export const router = (
   state: RouteResult = getCurrentRouteResult(),
-  { type, payload }: RouterAction
+  action: Action
 ) => {
-  switch (type) {
+  switch (action.type) {
     case ActionTypes.LOCATION_CHANGE_SUCCESS: {
-      return set(payload, {
+      return set(action.payload, {
         previous: set(state, { previous: undefined })
       });
     }

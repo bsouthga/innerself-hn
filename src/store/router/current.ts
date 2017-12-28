@@ -11,7 +11,7 @@ export const getCurrentRouteResult = (): RouteResult => {
   const pathname = location.pathname.slice(1);
   const valid = pathList.indexOf(pathname as RoutePath) !== -1;
   const query = queryFromString(location.search);
-  const path = valid ? pathname as RoutePath : HOME;
+  const path = valid ? (pathname as RoutePath) : HOME;
 
   if (!valid) {
     history.pushState({}, 'Innerself News', '/');

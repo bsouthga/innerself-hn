@@ -10,7 +10,15 @@ export const NavbarLink = connect((state: State, props: LinkProps) => {
   return Link(set(props, { cls, query: {} }));
 });
 
-const links = [{ path: 'new' }, { path: 'show' }, { path: 'ask' }];
+type Paths = typeof paths;
+type PathKey = keyof Paths;
+type Path = Paths[PathKey];
+
+const links: Array<{ path: Path }> = [
+  { path: 'new' },
+  { path: 'show' },
+  { path: 'ask' }
+];
 
 export const Navbar = () => html`
   <div class="navbar">

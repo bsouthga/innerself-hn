@@ -8,7 +8,7 @@ import { getFailed, getItems, getRequesting } from './submissions';
 const STORAGE_PREFIX = '_in_';
 const TS_REGEX = new RegExp(['^', STORAGE_PREFIX, '.*:ts$'].join(''));
 const storage = localStorage;
-const URLSP = URLSearchParams;
+const urlsp = (q?: string) => new URLSearchParams(q);
 const MINUTE = 6e4;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
@@ -32,9 +32,9 @@ export const num = Number;
 export const str = (x: number | string | { toString(): string }) => `${x}`;
 export const lastMinute = () => now() - MINUTE;
 
-export const isStory = (item?: Item): item is Story =>
+export const isStory = (item?: Item | void): item is Story =>
   !!item && item.type === 'story';
-export const isComment = (item?: Item): item is Comment =>
+export const isComment = (item?: Item | void): item is Comment =>
   !!item && item.type === 'comment';
 export const isString = (obj: any): obj is string => typeof obj === 'string';
 export const isObject = (obj: any): obj is object => typeof obj === 'object';
@@ -126,10 +126,10 @@ export const cachedFetch = (url: string, options?: RequestInit) => {
 };
 
 export const queryFromString = (query: string) =>
-  [...new URLSP(query)].reduce((o, [k, v]) => set(o, { [k]: v }), {});
+  [...urlsp(query)].reduce((o, [k, v]) => set(o, { [k]: v }), {});
 
 export const queryToString = (query: { [key: string]: string }) => {
-  const params = new URLSP();
+  const params = urlsp();
   const paramKeys = keys(query);
   paramKeys.forEach(key => params.set(key, query[key]));
   return str(params);

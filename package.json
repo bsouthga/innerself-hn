@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "rollup": "rollup -c ./rollup.config.js",
+    "tsc": "tsc",
     "test":
-      "prettier --single-quote --write './src/**/*.ts' && tslint --project ./ --fix --type-check './src/**/*.ts'",
+      "prettier --single-quote --write './src/**/*.ts' && tslint --project ./ --fix './src/**/*.ts'",
     "start": "npm run rollup -- -w",
     "build": "export NODE_ENV='production' && npm run rollup",
     "sync": "aws s3 sync ./public-s3/ s3://innerself-hn.com",
@@ -16,17 +17,17 @@
   "author": "bsouthga@gmail.com",
   "license": "MIT",
   "devDependencies": {
-    "clean-css": "^4.1.8",
-    "prettier": "^1.7.0",
-    "rollup": "^0.49.3",
+    "clean-css": "^4.1.9",
+    "prettier": "^1.9.2",
+    "rollup": "^0.53.0",
     "rollup-plugin-livereload": "^0.6.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-serve": "^0.4.2",
-    "rollup-plugin-typescript2": "^0.5.2",
-    "tslint": "^5.7.0",
-    "tslint-config-prettier": "^1.5.0",
-    "typescript": "^2.5.2",
-    "uglify-es": "^3.1.0"
+    "rollup-plugin-typescript2": "^0.9.0",
+    "tslint": "^5.8.0",
+    "tslint-config-prettier": "^1.6.0",
+    "typescript": "^2.6.2",
+    "uglify-es": "^3.3.2"
   },
   "dependencies": {
     "innerself": "^0.1.1"

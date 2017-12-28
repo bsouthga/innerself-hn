@@ -18,9 +18,11 @@ export const Item = (state: State) => {
     : '(no comments)';
 
   return html`
-    ${isComment(item)
-      ? Comment({ id, compact: true })
-      : Article({ item, text: true })}
+    ${
+      isComment(item)
+        ? Comment({ id, compact: true })
+        : Article({ item, text: true })
+    }
     <div class="comments">
       ${comments === '' ? Loading() : comments}
     </div>

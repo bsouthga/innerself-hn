@@ -50,9 +50,11 @@ export const submissions = (
         items: {}
       });
     }
+
     case ActionTypes.TOP_SUBMISSION_REQUEST: {
       return setRequestStatus(state, action, true);
     }
+
     case ActionTypes.TOP_SUBMISSION_SUCCESS: {
       const id = action.payload.id;
       return set(setRequestStatus(state, action, false), {
@@ -61,6 +63,7 @@ export const submissions = (
         })
       });
     }
+
     case ActionTypes.GET_ITEM_FAILURE:
     case ActionTypes.GET_USER_FAILURE:
     case ActionTypes.TOP_SUBMISSION_FAILURE: {
@@ -81,12 +84,12 @@ export const submissions = (
     case ActionTypes.GET_ITEM_REQUEST: {
       return setRequestStatus(state, action, true);
     }
+
     case ActionTypes.GET_USER_SUCCESS:
-    case ActionTypes.GET_USER_FAILURE:
-    case ActionTypes.GET_ITEM_SUCCESS:
-    case ActionTypes.GET_ITEM_FAILURE: {
+    case ActionTypes.GET_ITEM_SUCCESS: {
       return setRequestStatus(state, action, false);
     }
+
     case ActionTypes.TOGGLE_EXPAND_ITEM: {
       const { id } = action.payload;
       const { expanded } = state;
