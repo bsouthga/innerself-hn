@@ -11,7 +11,7 @@
 
 ## Requirements
 
-This project targets ES2015 complient browsers.
+This project targets ES2015 compliant browsers.
 
 ## Development
 
