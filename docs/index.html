@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>undefined</style>
+  <title>Innerself Hacker News</title>
+</head>
+
+<body>
+  <div id="root"></div>
+  <!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-54214517-5"></script>
+<script>
+  /**
+   * handle s3 redirects
+   */
+  if (location.hash.length > 0 && location.hash.substring(0, 2) === '#!') {
+    history.pushState({}, '', location.hash.substring(2));
+  }
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments) };
+  gtag('js', new Date());
+  gtag('config', 'UA-54214517-5');
+
+</script>
+  <script>(function () {
+    'use strict';
+
+    function html([first, ...strings], ...values) {
+        // Weave the literal strings and the interpolations.
+        // We don't have to explicitly handle array-typed values
+        // because concat will spread them flat for us.
+        return values.reduce(
+            (acc, cur) => acc.concat(cur, strings.shift()),
+            [first]
+        )
+
+        // Filter out interpolations which are null or undefined.  null is
+        // loosely-equal only to undefined and itself.
+        .filter(value => value != null)
+        .join("");
+    }
+
+    function createStore(reducer) {
+        let state = reducer();
+        const roots = new Map();
+        const prevs = new Map();
+
+        function render() {
+            for (const [root, component] of roots) {
+                const output = component();
+
+                // Poor man's Virtual DOM implementation :)  Compare the new output
+                // with the last output for this root.  Don't trust the current
+                // value of root.innerHTML as it may have been changed by other
+                // scripts or extensions.
+                if (output !== prevs.get(root)) {
+                    prevs.set(root, output);
+                    root.innerHTML = output;
+
+                    // Dispatch an event on the root to give developers a chance to
+                    // do some housekeeping after the whole DOM is replaced under
+                    // the root. You can re-focus elements in the listener to this
+                    // event. See example03.
+                    const event = new CustomEvent("render", { detail: state });
+                    root.dispatchEvent(event);
+                }
+            }
+        }
+        return {
+            attach(component, root) {
+                roots.set(root, component);
+                render();
+            },
+            connect(component) {
+                // Return a decorated component function.
+                return (...args) => component(state, ...args);
+            },
+            dispatch(action, ...args) {
+                state = reducer(state, action, args);
+                render();
+            },
+        };
+    }
+
+    const NEW = 'new';
+    const COMMENTS = 'comments';
+    const HOME = '';
+    const ITEM = 'item';
+    const SHOW = 'show';
+    const ASK = 'ask';
+    const USER = 'user';
+
+    const init = () => createAction(0 /* INIT */, {});
+
+    const insertEntities = (items) => createAction(14 /* INSERT_ENTITIES */, {
+        entities: items.reduce((out, e) => set(out, { [e.id]: e }), {}),
+    });
+
+    const db = (state = { entities: {} }, action) => {
+        switch (action.type) {
+            case 14 /* INSERT_ENTITIES */: {
+                return set(state, {
+                    entities: set(state.entities, action.payload.entities),
+                });
+            }
+            default:
+                return state;
+        }
+    };
+
+    const getItemById = (state, id) => {
+        const entities = state.db.entities;
+        return entities && entities[id];
+    };
+
+    const API_BASE = 'https://hacker-news.firebaseio.com/v0/';
+    const json = (endpoint, parameters = {}) => {
+        const params = new URLSearchParams();
+        keys(parameters).forEach((key) => params.set(key, parameters[key]));
+        const url = `${API_BASE}/${endpoint}.json?${params}`;
+        return cachedFetch(url).then((result) => result.json());
+    };
+    const requestItems = (ids) => Promise.all(ids.map((id) => json(`item/${id}`)));
+    const requestTop = (type, n = 20) => json((type || 'top') + 'stories');
+    const requestUser = (id) => json(`user/${id}`).then((u) => set(u, { type: 'user' }));
+
+    /**
+     *
+     *
+     * action creators
+     *
+     *
+     */
+    /**
+     * initiate a top Submissions request
+     */
+    const topSubmissionsRequest = (id) => createAction(1 /* TOP_SUBMISSION_REQUEST */, {
+        id,
+    });
+    /**
+     * top Submissions success event
+     */
+    const topSubmissionsSuccess = (id, submissions) => createAction(2 /* TOP_SUBMISSION_SUCCESS */, {
+        id,
+        submissions,
+    });
+    const topSubmissionsFailure = (id, error) => createAction(3 /* TOP_SUBMISSION_FAILURE */, {
+        id,
+        error,
+    });
+    const getTopSubmissions = (type) => {
+        requestTop(type)
+            .then((sub) => dispatch(topSubmissionsSuccess(type, sub)))
+            .catch((err) => dispatch(topSubmissionsFailure(type, err)));
+        return topSubmissionsRequest(type);
+    };
+    const getItemsRequest = (ids) => createAction(5 /* GET_ITEM_REQUEST */, { ids });
+    const getItemsSuccess = (items) => {
+        dispatch(createAction(6 /* GET_ITEM_SUCCESS */, {
+            ids: items.map(({ id }) => id),
+        }));
+        return insertEntities(items);
+    };
+    const getItemsFailure = (error, ids) => createAction(7 /* GET_ITEM_FAILURE */, {
+        error,
+        ids,
+    });
+    const getItems = (inputIds) => {
+        const ids = inputIds.map(num);
+        requestItems(ids)
+            .then((items) => dispatch(getItemsSuccess(items)))
+            .catch((err) => dispatch(getItemsFailure(err, ids)));
+        return getItemsRequest(ids);
+    };
+    const toggleExpandItem = (inputId) => createAction(8 /* TOGGLE_EXPAND_ITEM */, { id: num(inputId) });
+    const getUserRequest = (id) => createAction(9 /* GET_USER_REQUEST */, { id });
+    const getUserSuccess = (user) => {
+        dispatch(createAction(10 /* GET_USER_SUCCESS */, { id: user.id }));
+        return insertEntities([user]);
+    };
+    const getUserFailure = (error, id) => createAction(11 /* GET_USER_FAILURE */, {
+        error,
+        id,
+    });
+    const getUser = (id) => {
+        requestUser(id)
+            .then((item) => dispatch(getUserSuccess(item)))
+            .catch((err) => dispatch(getUserFailure(err, id)));
+        return getUserRequest(id);
+    };
+
+    const getIds = (payload) => {
+        const { id, ids } = payload;
+        const idList = ids || (typeof id !== 'undefined' && [id]) || [];
+        return idList;
+    };
+    const setRequestStatus = (state, action, status) => {
+        const idList = getIds(action.payload);
+        if (!idList.length)
+            return state;
+        return set(state, {
+            requesting: set(state.requesting, idList.reduce((out, i) => set(out, { [i]: status }), {})),
+        });
+    };
+    /**
+     * Main reducer for app
+     */
+    const submissions = (state = {
+        requesting: {},
+        expanded: {},
+        items: {},
+        failed: {},
+    }, action) => {
+        switch (action.type) {
+            case 4 /* CLEAR_TOP_SUBMISSION */: {
+                return set(state, {
+                    items: {},
+                });
+            }
+            case 1 /* TOP_SUBMISSION_REQUEST */: {
+                return setRequestStatus(state, action, true);
+            }
+            case 2 /* TOP_SUBMISSION_SUCCESS */: {
+                const id = action.payload.id;
+                return set(setRequestStatus(state, action, false), {
+                    items: set(state.items, {
+                        [id]: action.payload.submissions,
+                    }),
+                });
+            }
+            case 7 /* GET_ITEM_FAILURE */:
+            case 11 /* GET_USER_FAILURE */:
+            case 3 /* TOP_SUBMISSION_FAILURE */: {
+                const idList = getIds(action.payload);
+                if (!idList)
+                    return state;
+                return set(setRequestStatus(state, action, false), {
+                    failed: idList.reduce((out, id) => set(state, {
+                        [id]: now(),
+                    }), state.failed),
+                });
+            }
+            case 9 /* GET_USER_REQUEST */:
+            case 5 /* GET_ITEM_REQUEST */: {
+                return setRequestStatus(state, action, true);
+            }
+            case 10 /* GET_USER_SUCCESS */:
+            case 6 /* GET_ITEM_SUCCESS */: {
+                return setRequestStatus(state, action, false);
+            }
+            case 8 /* TOGGLE_EXPAND_ITEM */: {
+                const { id } = action.payload;
+                const { expanded } = state;
+                return set(state, {
+                    expanded: set(expanded, {
+                        [id]: !expanded[id],
+                    }),
+                });
+            }
+        }
+        return state;
+    };
+
+    const getSubmissions = (state) => state.submissions;
+    const getFailed = (state) => getSubmissions(state).failed;
+    const getRequesting = (state) => getSubmissions(state).requesting;
+    const getExpanded = (state) => getSubmissions(state).expanded;
+    const getItemsByType = (state, type) => getSubmissions(state).items[type];
+
+    const STORAGE_PREFIX = '_in_';
+    const TS_REGEX = new RegExp(['^', STORAGE_PREFIX, '.*:ts
+</body>
+
+</html>].join(''));
+    const storage = localStorage;
+    const urlsp = (q) => new URLSearchParams(q);
+    const MINUTE = 6e4;
+    const HOUR = 60 * MINUTE;
+    const DAY = 24 * HOUR;
+    const HN_HOST = /https?:&#x2F;&#x2F;news\.ycombinator\.com/g;
+    const { protocol, host } = location;
+    const expiry = MINUTE; // 1 min default
+    /**
+     *
+     *
+     * extract globals into exports for minifier
+     *
+     *
+     */
+    const tick = (fn, time = 0) => setTimeout(fn, time);
+    const now = Date.now;
+    const num = Number;
+    const str = (x) => `${x}`;
+    const lastMinute = () => now() - MINUTE;
+    const isStory = (item) => !!item && item.type === 'story';
+    const isComment = (item) => !!item && item.type === 'comment';
+    const isString = (obj) => typeof obj === 'string';
+    const max = Math.max;
+    const round = Math.round;
+    const keys = Object.keys;
+    const set = (...objs) => Object.assign({}, ...objs);
+    /**
+     * check if we should make a request for id...
+     *
+     * @param state
+     * @param id
+     */
+    const shouldRequest = (state, id) => {
+        const requesting = getRequesting(state);
+        const failed = getFailed(state);
+        return !requesting[id] && (!failed[id] || failed[id] < lastMinute());
+    };
+    /**
+     *
+     * check if item exists in state, request if necessary
+     *
+     */
+    const ensureRequested = (state, id) => {
+        const item = getItemById(state, id);
+        if (!item) {
+            if (shouldRequest(state, id))
+                dispatch(getItems([id]));
+        }
+        else {
+            return item;
+        }
+    };
+    /**
+     * compose functions of the same signature
+     *
+     * @param fns functions taking and returning type A
+     */
+    const compose = (...fns) => {
+        const first = fns.pop();
+        if (!first)
+            return (a) => a;
+        return (arg) => fns.reduceRight((result, fn) => fn(result), first(arg));
+    };
+    /**
+     * cached version of fetch
+     *
+     * see: https://www.sitepoint.com/cache-fetched-ajax-requests/
+     *
+     * @param url
+     * @param options
+     */
+    const cachedFetch = (url, options) => {
+        const cacheKey = `${STORAGE_PREFIX}${url}`;
+        const cached = storage.getItem(cacheKey);
+        const whenCached = storage.getItem(cacheKey + ':ts');
+        if (cached && whenCached) {
+            const age = now() - num(whenCached);
+            if (age < expiry) {
+                const response = new Response(new Blob([cached]));
+                return Promise.resolve(response);
+            }
+            else {
+                storage.removeItem(cacheKey);
+                storage.removeItem(cacheKey + ':ts');
+            }
+        }
+        return fetch(url, options).then((response) => {
+            if (response.status === 200) {
+                const ct = response.headers.get('Content-Type');
+                if (ct && (ct.match(/application\/json/i) || ct.match(/text\//i))) {
+                    response
+                        .clone()
+                        .text()
+                        .then((content) => {
+                        storage.setItem(cacheKey, content);
+                        storage.setItem(cacheKey + ':ts', str(now()));
+                    });
+                }
+            }
+            return response;
+        });
+    };
+    const queryFromString = (query) => Array.from(urlsp(query)).reduce((o, [k, v]) => set(o, { [k]: v }), {});
+    const queryToString = (query) => {
+        const params = urlsp();
+        const paramKeys = keys(query);
+        paramKeys.forEach((key) => params.set(key, query[key]));
+        return str(params);
+    };
+    /**
+     * combine reducers (like redux)
+     */
+    const combineReducers = (reducers) => {
+        const names = keys(reducers);
+        const initAction = init();
+        return (state, action = initAction) => names.reduce((out, name) => {
+            out[name] = reducers[name](out[name], action);
+            return out;
+        }, state || {});
+    };
+    const plural = (n) => (n === 1 ? ' ago' : 's ago');
+    const formatDateHelper = (diff, div, text) => {
+        const v = round(diff / div);
+        return v + ' ' + text + plural(v);
+    };
+    const formatDate = (d) => {
+        const diff = now() - d * 1000;
+        switch (true) {
+            case diff > DAY:
+                return formatDateHelper(diff, DAY, 'day');
+            case diff > HOUR:
+                return formatDateHelper(diff, HOUR, 'hour');
+            case diff > MINUTE:
+                return formatDateHelper(diff, MINUTE, 'minute');
+            default: {
+                return 'less than a minute ago';
+            }
+        }
+    };
+    const replaceLinkHost = (content = '') => content.replace(HN_HOST, `${protocol}//${host}`);
+    /**
+     * create action from type and payload
+     */
+    const createAction = (type, payload) => ({
+        type,
+        payload,
+    });
+    /**
+     * simple debounce
+     *
+     * @param fn no-args function
+     * @param time debounce interval
+     */
+    const debounce = (fn, time = 1000) => {
+        let timeout = null;
+        return () => {
+            if (timeout !== null) {
+                clearTimeout(timeout);
+            }
+            timeout = tick(fn, time);
+        };
+    };
+    /**
+     * remove expired local storage items
+     */
+    const pruneLocalStorage = () => {
+        const storageKeys = keys(storage);
+        const remove = [];
+        const date = now() - expiry * 1000;
+        let i = storageKeys.length;
+        while (i--) {
+            const key = storageKeys[i];
+            if (TS_REGEX.test(key)) {
+                const ts = storage.getItem(key);
+                if (Number(ts) < date) {
+                    remove.push(key);
+                    if (remove.length > 100)
+                        break;
+                }
+            }
+        }
+        if (remove.length) {
+            let r = remove.length;
+            while (r--) {
+                const key = remove[r];
+                storage.removeItem(key);
+                storage.removeItem(key.replace(':ts', ''));
+            }
+            tick(pruneLocalStorage);
+        }
+    };
+    /**
+     * create middleware to prune local storage on actions
+     */
+    const createPruneMiddleware = () => {
+        const debounced = debounce(pruneLocalStorage);
+        return (action) => {
+            debounced();
+            return action;
+        };
+    };
+
+    /**
+     * navigate to a route
+     *
+     * @param path route to navigate to
+     * @param query optional query params
+     */
+    const push = (path, query) => createAction(13 /* LOCATION_CHANGE_REQUEST */, {
+        path,
+        query,
+    });
+
+    const pathList = [NEW, COMMENTS, HOME, ITEM, SHOW, ASK, USER];
+    /**
+     * create initial route result for state
+     */
+    const getCurrentRouteResult = () => {
+        const pathname = location.pathname.slice(1);
+        const valid = pathList.indexOf(pathname) !== -1;
+        const query = queryFromString(location.search);
+        const path = valid ? pathname : HOME;
+        if (!valid) {
+            history.pushState({}, 'Innerself News', '/');
+        }
+        return { path, query };
+    };
+
+    const getRouter = (state) => state.router;
+    const getQuery = (state) => getRouter(state).query || {};
+    const getPath = (state) => getRouter(state).path;
+
+    const router = (state = getCurrentRouteResult(), action) => {
+        switch (action.type) {
+            case 12 /* LOCATION_CHANGE_SUCCESS */: {
+                return set(action.payload, {
+                    previous: set(state, { previous: undefined }),
+                });
+            }
+            default:
+                return state;
+        }
+    };
+
+    const createRouterMiddleware = () => {
+        /**
+         * listen for back / forward and update state
+         */
+        window.addEventListener('popstate', () => dispatch(createAction(12 /* LOCATION_CHANGE_SUCCESS */, getCurrentRouteResult())));
+        return (action) => {
+            switch (action.type) {
+                case 13 /* LOCATION_CHANGE_REQUEST */: {
+                    const { payload } = action;
+                    const { path, query } = payload;
+                    const queryString = query && queryToString(query);
+                    history.pushState({}, path, (path || '/') + (queryString ? '?' + queryString : ''));
+                    return createAction(12 /* LOCATION_CHANGE_SUCCESS */, payload);
+                }
+            }
+            return action;
+        };
+    };
+
+    const middleware = compose(createRouterMiddleware(), createPruneMiddleware());
+    var middleware$1 = (reducer) => (state, action) => reducer(state, action && middleware(action));
+
+    /**
+     * Main reducer for app
+     */
+    const reducer = combineReducers({
+        router,
+        submissions,
+        db,
+    });
+
+    const { dispatch: originalDispatch, connect, attach } = createStore(middleware$1(reducer));
+    // attach dispatch function to window for use in element events
+    window.dispatch = dispatch;
+    function dispatch(action, toString) {
+        if (toString)
+            return `'event.preventDefault();dispatch(${JSON.stringify(action)})'`;
+        return originalDispatch(action);
+    }
+
+    const go = (path, query) => dispatch(push(path, query), true);
+    /**
+     * client side routing link
+     */
+    const Link = (props) => {
+        const { path, text, query = {}, cls = '' } = props;
+        const queryString = queryToString(query);
+        const url = path + (queryString ? `?${queryString}` : '');
+        return html `
+    <a href="/${url}" class="${cls} client-link" onclick=${go(path, query)}>
+      ${text || path}
+    </a>
+  `;
+    };
+
+    const Loading = () => html `<div class="loader"></div>`;
+
+    const COMMENT = 'comment';
+    /**
+     * toggle expanding comment children
+     */
+    const ToggleLink = (id, children) => html `
+  <a class="${COMMENT}-expand" onclick=${dispatch(toggleExpandItem(id), true)}>
+    ${children}
+  </a>
+`;
+    /**
+     * individual comment tree node, includes children
+     */
+    const Comment = connect((state, props) => {
+        const { id, compact, child } = props;
+        const expanded = getExpanded(state);
+        const item = ensureRequested(state, id);
+        if (!isComment(item))
+            return '';
+        const user = !item.by
+            ? '[deleted]'
+            : Link({
+                path: USER,
+                text: `${item.by}`,
+                cls: `${ARTICLE}-link`,
+                query: { id: item.by || '' },
+            });
+        const commentLink = Link({
+            path: ITEM,
+            text: formatDate(item.time),
+            cls: `${ARTICLE}-link`,
+            query: { id: `${item.id}` },
+        });
+        const parentLink = compact &&
+            Link({
+                path: ITEM,
+                text: 'parent',
+                cls: `${ARTICLE}-link`,
+                query: { id: `${item.parent}` },
+            });
+        const kids = item.kids || [];
+        const childrenToggle = !expanded[id]
+            ? ToggleLink(id, `show children (${kids.length})`)
+            : ToggleLink(id, `hide children`);
+        const showChildren = kids.length && !compact;
+        const children = !showChildren
+            ? ''
+            : !expanded[id]
+                ? ''
+                : kids.map((kid) => Comment({ id: kid, child: true })).join('') ||
+                    Loading();
+        return html `
+    <div class="${COMMENT} ${child ? COMMENT + '-child' : ''}">
+      <div class="${COMMENT}-info">
+        ${user} ${commentLink} ${parentLink ? '| ' + parentLink : ''}
+      </div>
+      <div class="${COMMENT}-text">${replaceLinkHost(item.text)}</div>
+      ${showChildren ? childrenToggle : ''} ${replaceLinkHost(children)}
+    </div>
+  `;
+    });
+
+    const ARTICLE = 'article';
+    const Article = ({ item, index, text }) => {
+        const user = Link({
+            path: 'user',
+            text: `${item.by}`,
+            cls: `${ARTICLE}-link`,
+            query: { id: item.by || '' },
+        });
+        const itemLink = Link({
+            path: 'item',
+            text: `${item.title}`,
+            cls: `${ARTICLE}-title`,
+            query: { id: `${item.id}` },
+        });
+        const comments = Link({
+            path: 'item',
+            text: `${item.descendants || 0} ${COMMENT}s`,
+            cls: `${ARTICLE}-link`,
+            query: { id: `${item.id}` },
+        });
+        const indexInfo = typeof index !== 'undefined'
+            ? html `<div class="${ARTICLE}-index">${index + 1}.</div>`
+            : '';
+        const itemText = !text
+            ? ''
+            : html ` <div class="${ARTICLE}-text">${item.text}</div> `;
+        const url = item.url;
+        const host = url && new URL(url).hostname;
+        const link = !url
+            ? itemLink
+            : `<a class="${ARTICLE}-title" href="${url}">${item.title}</a> ` +
+                (host ? `<div class="host">(${host.replace('www.', '')})</div>` : '');
+        return html `
+    <div class="${ARTICLE}">
+      ${indexInfo}
+      <div>
+        ${link}
+        <div class="${ARTICLE}-info">
+          ${item.score} points by ${user} ${formatDate(item.time)} | ${comments}
+        </div>
+        ${itemText}
+      </div>
+    </div>
+  `;
+    };
+
+    const ArticleList = connect((state, props) => {
+        const { items, skip = 0 } = props;
+        const stories = items.map((id) => getItemById(state, id)).filter(isStory);
+        return html `
+    <div class="${ARTICLE}-list">
+      ${!stories.length
+        ? '(no items)'
+        : stories.map((item, index) => Article({ item, index: index + skip || 0 }))}
+    </div>
+  `;
+    });
+
+    const RESULTS_PER_PAGE = 20;
+    const Page = connect((state, direction, skip) => {
+        const query = getQuery(state);
+        const path = getPath(state);
+        return Link({
+            path,
+            text: direction,
+            query: set(query, {
+                skip: direction === 'next'
+                    ? skip + RESULTS_PER_PAGE
+                    : max(0, skip - RESULTS_PER_PAGE),
+            }),
+        });
+    });
+
+    const Home = (state, type) => {
+        const stories = getItemsByType(state, type);
+        const query = getQuery(state);
+        // if we don't yet have the submissions,
+        // dispatch (async) event to get them...
+        if (!stories) {
+            if (shouldRequest(state, type))
+                dispatch(getTopSubmissions(type));
+            return Loading();
+        }
+        const skip = 'skip' in query ? num(query.skip) : 0;
+        const slice = stories.slice(skip, skip + RESULTS_PER_PAGE);
+        // next, check for all items in the slice we are interested in...
+        const need = slice.filter((id) => !getItemById(state, id));
+        if (need.length) {
+            const request = need.filter((id) => shouldRequest(state, id));
+            if (request.length)
+                dispatch(getItems(request));
+            return Loading();
+        }
+        else {
+            const showNext = skip + RESULTS_PER_PAGE < stories.length;
+            const showPrevious = skip !== 0;
+            return `
+      ${ArticleList({ items: slice, skip })}
+      <div class="paging-controls">
+        ${showPrevious ? Page('previous', skip) : ''}
+        ${showPrevious && showNext ? ' | ' : ''}
+        ${showNext ? Page('next', skip) : ''}
+      </div>
+    `;
+        }
+    };
+
+    const NotFound = () => html `Oops, not found...`;
+
+    const Item = (state) => {
+        const { id = '' } = getQuery(state);
+        if (!id)
+            return NotFound();
+        const item = ensureRequested(state, id);
+        if (!isStory(item) && !isComment(item))
+            return Loading();
+        const { kids } = item;
+        const comments = kids
+            ? kids.map((kid) => Comment({ id: kid })).join('')
+            : '(no comments)';
+        return html `
+    ${isComment(item)
+        ? Comment({ id, compact: true })
+        : Article({ item, text: true })}
+    <div class="comments">${comments === '' ? Loading() : comments}</div>
+  `;
+    };
+
+    const NavbarLink = connect((state, props) => {
+        const active = getPath(state) === props.path;
+        const cls = (props.cls || '') + ' navbar-link ' + (active ? 'active' : '');
+        return Link(set(props, { cls, query: {} }));
+    });
+    const links = [
+        { path: 'new' },
+        { path: 'show' },
+        { path: 'ask' },
+    ];
+    const Navbar = () => html `
+  <div class="navbar">
+    <div class="navbar-links">
+      ${NavbarLink({
+    path: HOME,
+    cls: 'logo',
+    text: 'Innerself News',
+})}
+      ${links.map(NavbarLink).join(' | ')}
+    </div>
+    <a class="navbar-link" href="https://github.com/bsouthga/innerself-hn">
+      <img src="github.svg" />
+    </a>
+  </div>
+`;
+
+    const SUBMITTED = 'submitted';
+    const SubmittedItem = (item) => !item ? '' : `<div class="${SUBMITTED}-item">${item.trim()}</div>`;
+    const Submitted = (state) => {
+        const user = ensureUser(state);
+        const query = getQuery(state);
+        const path = getPath(state);
+        if (isString(user))
+            return user;
+        const { submitted = [] } = user;
+        const total = submitted.length;
+        const skip = 'skip' in query ? num(query.skip) : 0;
+        const typesToShow = 'type' in query ? query.type : 'all';
+        const show = submitted.slice(skip, skip + RESULTS_PER_PAGE);
+        const need = show.filter((id) => !getItemById(state, id));
+        if (need.length) {
+            const request = need.filter((id) => shouldRequest(state, id));
+            if (request.length)
+                dispatch(getItems(request));
+        }
+        const showPrevious = skip !== 0;
+        const showNext = skip + RESULTS_PER_PAGE < total;
+        const showAll = typesToShow === 'all';
+        const showComments = showAll || typesToShow === 'comments';
+        const showStories = showAll || typesToShow === 'stories';
+        const content = need.length
+            ? Loading()
+            : show
+                .map((id) => {
+                const item = getItemById(state, id);
+                switch (true) {
+                    case isComment(item):
+                        return showComments ? Comment({ id, compact: true }) : '';
+                    case isStory(item):
+                        return showStories ? Article({ item: item }) : '';
+                }
+            })
+                .map(SubmittedItem)
+                .join('');
+        const links = [
+            { text: `show all`, query: set(query, { type: 'all' }) },
+            {
+                text: `comments only`,
+                query: set(query, { type: 'comments' }),
+            },
+            {
+                text: `stories only`,
+                query: set(query, { type: 'stories' }),
+            },
+        ];
+        return html `
+    <div class="${SUBMITTED}">
+      <div class="${SUBMITTED}-title">submissions by ${user.id}</div>
+      <div class="paging-controls">
+        ${showPrevious ? Page('previous', skip) + '|' : ''}
+        ${links
+        .map((link) => Link(set({
+        cls: link.query.type === typesToShow ? 'active' : '',
+        path,
+    }, link)))
+        .join('|')}
+        ${showNext ? '|' + Page('next', skip) : ''}
+      </div>
+      <div class="${SUBMITTED}-content">${content || '(none)'}</div>
+    </div>
+  `;
+    };
+
+    const ensureUser = (state) => {
+        const { id = '' } = getQuery(state);
+        const requesting = getRequesting(state);
+        const failed = getFailed(state);
+        if (!id)
+            return NotFound();
+        const user = getItemById(state, id);
+        if (user && user.type !== 'user')
+            return NotFound();
+        if (!user) {
+            if (!requesting[id] && (!failed[id] || failed[id] < lastMinute()))
+                dispatch(getUser(id));
+            return Loading();
+        }
+        return user;
+    };
+    const row = (key, value) => `<tr><td>${key}:</td><td>${value}</td></tr>`;
+    const User = (state) => {
+        const user = ensureUser(state);
+        return isString(user)
+            ? user
+            : html `
+        <table>
+          ${[
+            row('user', user.id),
+            row('created', formatDate(user.created)),
+            row('karma', user.karma),
+            row('about', user.about || 'blank'),
+        ]}
+        </table>
+        ${Submitted(state)}
+      `;
+    };
+
+    const Content = connect((state) => {
+        const path = getPath(state);
+        switch (path) {
+            case HOME:
+            case NEW:
+            case ASK:
+            case SHOW:
+                return Home(state, path);
+            case ITEM:
+                return Item(state);
+            case USER:
+                return User(state);
+            default:
+                return NotFound();
+        }
+    });
+    const App = () => html `
+  <div class="container">
+    ${Navbar()}
+    <div class="content">${Content()}</div>
+    <div class="footer"><a href="https://bsou.io">Ben Southgate</a> | 2017</div>
+  </div>
+`;
+
+    attach(App, document.getElementById('root'));
+
+}());
+</script>
+</body>
+
+</html>
