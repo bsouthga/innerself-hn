@@ -21,9 +21,8 @@ export const Link = (props: LinkProps) => {
   const url = path + (queryString ? `?${queryString}` : '');
 
   return html`
-      <a href="/${url}" class="${cls} client-link"
-        onclick=${go(path, query)}>
-        ${text || path}
-      </a>
-    `;
+    <a href="/${url}" class="${cls} client-link" onclick=${go(path, query)}>
+      ${text || path}
+    </a>
+  `;
 };

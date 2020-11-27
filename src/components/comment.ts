@@ -5,13 +5,13 @@ import {
   getExpanded,
   paths,
   State,
-  toggleExpandItem
+  toggleExpandItem,
 } from '../store';
 import {
   ensureRequested,
   formatDate,
   isComment,
-  replaceLinkHost
+  replaceLinkHost,
 } from '../store/util';
 import { ARTICLE } from './article';
 import { Link } from './link';
@@ -29,8 +29,7 @@ export interface CommentProps {
  * toggle expanding comment children
  */
 const ToggleLink = (id: number | string, children: string) => html`
-  <a class="${COMMENT}-expand"
-     onclick=${dispatch(toggleExpandItem(id), true)}>
+  <a class="${COMMENT}-expand" onclick=${dispatch(toggleExpandItem(id), true)}>
     ${children}
   </a>
 `;
@@ -51,14 +50,14 @@ export const Comment = connect((state: State, props: CommentProps): string => {
         path: paths.USER,
         text: `${item.by}`,
         cls: `${ARTICLE}-link`,
-        query: { id: item.by || '' }
+        query: { id: item.by || '' },
       });
 
   const commentLink = Link({
     path: paths.ITEM,
     text: formatDate(item.time),
     cls: `${ARTICLE}-link`,
-    query: { id: `${item.id}` }
+    query: { id: `${item.id}` },
   });
 
   const parentLink =
@@ -67,7 +66,7 @@ export const Comment = connect((state: State, props: CommentProps): string => {
       path: paths.ITEM,
       text: 'parent',
       cls: `${ARTICLE}-link`,
-      query: { id: `${item.parent}` }
+      query: { id: `${item.parent}` },
     });
 
   const kids = item.kids || [];
@@ -81,20 +80,17 @@ export const Comment = connect((state: State, props: CommentProps): string => {
   const children = !showChildren
     ? ''
     : !expanded[id]
-      ? ''
-      : kids.map(kid => Comment({ id: kid, child: true })).join('') ||
-        Loading();
+    ? ''
+    : kids.map((kid) => Comment({ id: kid, child: true })).join('') ||
+      Loading();
 
   return html`
     <div class="${COMMENT} ${child ? COMMENT + '-child' : ''}">
       <div class="${COMMENT}-info">
-       ${user} ${commentLink} ${parentLink ? '| ' + parentLink : ''}
+        ${user} ${commentLink} ${parentLink ? '| ' + parentLink : ''}
       </div>
-      <div class="${COMMENT}-text">
-        ${replaceLinkHost(item.text)}
-      </div>
-      ${showChildren ? childrenToggle : ''}
-      ${replaceLinkHost(children)}
+      <div class="${COMMENT}-text">${replaceLinkHost(item.text)}</div>
+      ${showChildren ? childrenToggle : ''} ${replaceLinkHost(children)}
     </div>
   `;
 });

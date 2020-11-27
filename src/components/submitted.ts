@@ -6,7 +6,7 @@ import {
   getPath,
   getQuery,
   State,
-  Story
+  Story,
 } from '../store';
 import {
   isComment,
@@ -14,7 +14,7 @@ import {
   isString,
   num,
   set,
-  shouldRequest
+  shouldRequest,
 } from '../store/util';
 import { Article } from './article';
 import { Comment } from './comment';
@@ -41,10 +41,10 @@ export const Submitted = (state: State) => {
   const skip = 'skip' in query ? num(query.skip) : 0;
   const typesToShow = 'type' in query ? query.type : 'all';
   const show = submitted.slice(skip, skip + RESULTS_PER_PAGE);
-  const need = show.filter(id => !getItemById(state, id));
+  const need = show.filter((id) => !getItemById(state, id));
 
   if (need.length) {
-    const request = need.filter(id => shouldRequest(state, id));
+    const request = need.filter((id) => shouldRequest(state, id));
     if (request.length) dispatch(getItems(request));
   }
 
@@ -57,7 +57,7 @@ export const Submitted = (state: State) => {
   const content = need.length
     ? Loading()
     : show
-        .map(id => {
+        .map((id) => {
           const item = getItemById(state, id)!;
           switch (true) {
             case isComment(item):
@@ -73,28 +73,26 @@ export const Submitted = (state: State) => {
     { text: `show all`, query: set(query, { type: 'all' }) },
     {
       text: `comments only`,
-      query: set(query, { type: 'comments' })
+      query: set(query, { type: 'comments' }),
     },
     {
       text: `stories only`,
-      query: set(query, { type: 'stories' })
-    }
+      query: set(query, { type: 'stories' }),
+    },
   ];
 
   return html`
     <div class="${SUBMITTED}">
-      <div class="${SUBMITTED}-title">
-        submissions by ${user.id}
-      </div>
+      <div class="${SUBMITTED}-title">submissions by ${user.id}</div>
       <div class="paging-controls">
         ${showPrevious ? Page('previous', skip) + '|' : ''}
         ${links
-          .map(link =>
+          .map((link) =>
             Link(
               set(
                 {
                   cls: link.query.type === typesToShow ? 'active' : '',
-                  path
+                  path,
                 } as LinkProps,
                 link
               )
@@ -103,9 +101,7 @@ export const Submitted = (state: State) => {
           .join('|')}
         ${showNext ? '|' + Page('next', skip) : ''}
       </div>
-      <div class="${SUBMITTED}-content">
-        ${content || '(none)'}
-      </div>
+      <div class="${SUBMITTED}-content">${content || '(none)'}</div>
     </div>
   `;
 };

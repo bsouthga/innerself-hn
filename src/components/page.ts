@@ -16,8 +16,8 @@ export const Page = connect(
         skip:
           direction === 'next'
             ? skip + RESULTS_PER_PAGE
-            : max(0, skip - RESULTS_PER_PAGE)
-      })
+            : max(0, skip - RESULTS_PER_PAGE),
+      }),
     });
   }
 );

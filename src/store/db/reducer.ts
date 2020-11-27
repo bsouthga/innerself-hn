@@ -7,7 +7,7 @@ export const db = (state: DbState = { entities: {} }, action: Action) => {
   switch (action.type) {
     case ActionTypes.INSERT_ENTITIES: {
       return set(state, {
-        entities: set(state.entities, action.payload.entities)
+        entities: set(state.entities, action.payload.entities),
       });
     }
 

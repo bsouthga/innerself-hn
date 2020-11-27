@@ -17,5 +17,5 @@ interface InsertEntitesAction {
 
 export const insertEntities = (items: Item[]): InsertEntitesAction =>
   createAction(ActionTypes.INSERT_ENTITIES, {
-    entities: items.reduce((out, e) => set(out, { [e.id]: e }), {})
+    entities: items.reduce((out, e) => set(out, { [e.id]: e }), {}),
   });

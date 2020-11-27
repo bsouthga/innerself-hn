@@ -6,7 +6,7 @@ import {
   getQuery,
   getTopSubmissions,
   State,
-  TopRequestType
+  TopRequestType,
 } from '../store';
 import { num, shouldRequest } from '../store/util';
 import { ArticleList } from './article-list';
@@ -28,9 +28,9 @@ export const Home = (state: State, type: TopRequestType) => {
   const slice = stories.slice(skip, skip + RESULTS_PER_PAGE);
 
   // next, check for all items in the slice we are interested in...
-  const need = slice.filter(id => !getItemById(state, id));
+  const need = slice.filter((id) => !getItemById(state, id));
   if (need.length) {
-    const request = need.filter(id => shouldRequest(state, id));
+    const request = need.filter((id) => shouldRequest(state, id));
     if (request.length) dispatch(getItems(request));
     return Loading();
   } else {

@@ -14,17 +14,13 @@ export const Item = (state: State) => {
 
   const { kids } = item;
   const comments = kids
-    ? kids.map(kid => Comment({ id: kid })).join('')
+    ? kids.map((kid) => Comment({ id: kid })).join('')
     : '(no comments)';
 
   return html`
-    ${
-      isComment(item)
-        ? Comment({ id, compact: true })
-        : Article({ item, text: true })
-    }
-    <div class="comments">
-      ${comments === '' ? Loading() : comments}
-    </div>
+    ${isComment(item)
+      ? Comment({ id, compact: true })
+      : Article({ item, text: true })}
+    <div class="comments">${comments === '' ? Loading() : comments}</div>
   `;
 };

@@ -5,7 +5,7 @@ import { SubmissionState } from './state';
 
 const getIds = (payload: {
   id?: string | number;
-  ids?: Array<string | number>;
+  ids?: (string | number)[];
 }) => {
   const { id, ids } = payload;
   const idList = ids || (typeof id !== 'undefined' && [id]) || [];
@@ -17,7 +17,7 @@ const setRequestStatus = (
   action: {
     payload: {
       id?: string | number;
-      ids?: Array<string | number>;
+      ids?: (string | number)[];
     };
   },
   status: boolean
@@ -28,7 +28,7 @@ const setRequestStatus = (
     requesting: set(
       state.requesting,
       idList.reduce((out, i) => set(out, { [i]: status }), {})
-    )
+    ),
   });
 };
 
@@ -40,14 +40,14 @@ export const submissions = (
     requesting: {},
     expanded: {},
     items: {},
-    failed: {}
+    failed: {},
   },
   action: Action
 ): SubmissionState => {
   switch (action.type) {
     case ActionTypes.CLEAR_TOP_SUBMISSION: {
       return set(state, {
-        items: {}
+        items: {},
       });
     }
 
@@ -59,8 +59,8 @@ export const submissions = (
       const id = action.payload.id;
       return set(setRequestStatus(state, action, false), {
         items: set(state.items, {
-          [id]: action.payload.submissions
-        })
+          [id]: action.payload.submissions,
+        }),
       });
     }
 
@@ -73,10 +73,10 @@ export const submissions = (
         failed: idList.reduce(
           (out, id) =>
             set(state, {
-              [id]: now()
+              [id]: now(),
             }),
           state.failed
-        )
+        ),
       });
     }
 
@@ -95,8 +95,8 @@ export const submissions = (
       const { expanded } = state;
       return set(state, {
         expanded: set(expanded, {
-          [id]: !expanded[id]
-        })
+          [id]: !expanded[id],
+        }),
       });
     }
   }

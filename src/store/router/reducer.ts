@@ -11,7 +11,7 @@ export const router = (
   switch (action.type) {
     case ActionTypes.LOCATION_CHANGE_SUCCESS: {
       return set(action.payload, {
-        previous: set(state, { previous: undefined })
+        previous: set(state, { previous: undefined }),
       });
     }
     default:

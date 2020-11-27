@@ -79,10 +79,10 @@ export const ensureRequested = (state: State, id: string | number) => {
  *
  * @param fns functions taking and returning type A
  */
-export const compose = <A>(...fns: Array<(a: A) => A>): ((a: A) => A) => {
+export const compose = <A>(...fns: ((a: A) => A)[]): ((a: A) => A) => {
   const first = fns.pop();
-  if (!first) return a => a;
-  return arg => fns.reduceRight((result, fn) => fn(result), first(arg));
+  if (!first) return (a) => a;
+  return (arg) => fns.reduceRight((result, fn) => fn(result), first(arg));
 };
 
 /**
@@ -108,14 +108,14 @@ export const cachedFetch = (url: string, options?: RequestInit) => {
     }
   }
 
-  return fetch(url, options).then(response => {
+  return fetch(url, options).then((response) => {
     if (response.status === 200) {
       const ct = response.headers.get('Content-Type');
       if (ct && (ct.match(/application\/json/i) || ct.match(/text\//i))) {
         response
           .clone()
           .text()
-          .then(content => {
+          .then((content) => {
             storage.setItem(cacheKey, content);
             storage.setItem(cacheKey + ':ts', str(now()));
           });
@@ -131,7 +131,7 @@ export const queryFromString = (query: string) =>
 export const queryToString = (query: { [key: string]: string }) => {
   const params = urlsp();
   const paramKeys = keys(query);
-  paramKeys.forEach(key => params.set(key, query[key]));
+  paramKeys.forEach((key) => params.set(key, query[key]));
   return str(params);
 };
 
@@ -141,7 +141,7 @@ export const queryToString = (query: { [key: string]: string }) => {
 export const combineReducers = <S extends { [key: string]: any }>(
   reducers: { [K in keyof S]: (state: S[K], action: Action) => S[K] }
 ): ((state: S, action?: Action) => S) => {
-  const names = keys(reducers) as Array<keyof S>;
+  const names = keys(reducers) as (keyof S)[];
   const initAction = init();
 
   return (state, action = initAction) =>
@@ -183,7 +183,7 @@ export const createAction = <T extends number, P extends {}>(
   payload: P
 ) => ({
   type,
-  payload
+  payload,
 });
 
 /**
@@ -193,9 +193,12 @@ export const createAction = <T extends number, P extends {}>(
  * @param time debounce interval
  */
 export const debounce = <F extends () => any>(fn: F, time = 1000) => {
-  let timeout = 0;
+  let timeout: NodeJS.Timeout | null = null;
   return () => {
-    clearTimeout(timeout);
+    if (timeout !== null) {
+      clearTimeout(timeout);
+    }
+
     timeout = tick(fn, time);
   };
 };

@@ -10,17 +10,15 @@ interface ArticleProps {
 
 export const ArticleList = connect((state: State, props: ArticleProps) => {
   const { items, skip = 0 } = props;
-  const stories = items.map(id => getItemById(state, id)).filter(isStory);
+  const stories = items.map((id) => getItemById(state, id)).filter(isStory);
 
   return html`
     <div class="${ARTICLE}-list">
-      ${
-        !stories.length
-          ? '(no items)'
-          : stories.map((item, index) =>
-              Article({ item, index: index + skip || 0 })
-            )
-      }
+      ${!stories.length
+        ? '(no items)'
+        : stories.map((item, index) =>
+            Article({ item, index: index + skip || 0 })
+          )}
     </div>
   `;
 });

@@ -28,5 +28,5 @@ export const enum ActionTypes {
   /**
    * db
    */
-  INSERT_ENTITIES
+  INSERT_ENTITIES,
 }

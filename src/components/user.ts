@@ -6,7 +6,7 @@ import {
   getQuery,
   getRequesting,
   getUser,
-  State
+  State,
 } from '../store';
 import { formatDate, isString, lastMinute } from '../store/util';
 import { Loading } from './loading';
@@ -39,14 +39,14 @@ export const User = (state: State) => {
   return isString(user)
     ? user
     : html`
-    <table>
-      ${[
-        row('user', user.id),
-        row('created', formatDate(user.created)),
-        row('karma', user.karma),
-        row('about', user.about || 'blank')
-      ]}
-    </table>
-    ${Submitted(state)}
-  `;
+        <table>
+          ${[
+            row('user', user.id),
+            row('created', formatDate(user.created)),
+            row('karma', user.karma),
+            row('about', user.about || 'blank'),
+          ]}
+        </table>
+        ${Submitted(state)}
+      `;
 };

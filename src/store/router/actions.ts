@@ -8,7 +8,7 @@ export type RouterAction = LocationChangeRequest | LocationChangeSuccess;
  * typecheck the routes
  */
 export type PathKey = keyof typeof paths;
-export type RoutePath = (typeof paths)[PathKey];
+export type RoutePath = typeof paths[PathKey];
 export interface Query {
   [key: string]: string;
 }
@@ -37,5 +37,5 @@ interface LocationChangeSuccess {
 export const push = (path: RoutePath, query?: { [key: string]: string }) =>
   createAction(ActionTypes.LOCATION_CHANGE_REQUEST, {
     path,
-    query
+    query,
   }) as LocationChangeRequest;

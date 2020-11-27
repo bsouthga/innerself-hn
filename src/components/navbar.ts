@@ -14,10 +14,10 @@ type Paths = typeof paths;
 type PathKey = keyof Paths;
 type Path = Paths[PathKey];
 
-const links: Array<{ path: Path }> = [
+const links: { path: Path }[] = [
   { path: 'new' },
   { path: 'show' },
-  { path: 'ask' }
+  { path: 'ask' },
 ];
 
 export const Navbar = () => html`
@@ -26,12 +26,11 @@ export const Navbar = () => html`
       ${NavbarLink({
         path: paths.HOME,
         cls: 'logo',
-        text: 'Innerself News'
+        text: 'Innerself News',
       })}
       ${links.map(NavbarLink).join(' | ')}
     </div>
-    <a class="navbar-link"
-       href="https://github.com/bsouthga/innerself-hn">
+    <a class="navbar-link" href="https://github.com/bsouthga/innerself-hn">
       <img src="github.svg" />
     </a>
   </div>

@@ -14,5 +14,5 @@ export type Reducer = (state: State, action?: Action) => State;
 export const reducer = combineReducers<State>({
   router,
   submissions,
-  db
+  db,
 });
