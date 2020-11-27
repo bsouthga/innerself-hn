@@ -5,16 +5,13 @@ import typescript from 'rollup-plugin-typescript2';
 import * as fs from 'fs';
 import { execSync } from 'child_process';
 import * as csso from 'csso';
-import { minify } from 'uglify-es';
+import uglify from 'uglify-es';
 
 const prod = process.env.NODE_ENV === 'production';
 const DEPLOY_DIR = 'docs';
 
 function prodPlugin() {
   return {
-    transformBundle(source) {
-      return minify(source).code.replace(/\s+/g, ' ');
-    },
     buildEnd() {
       const index = fs.readFileSync('./public/index.html').toString();
       const inject = fs.readFileSync('./public/inject.html').toString();
@@ -26,11 +23,11 @@ function prodPlugin() {
       const replaced = index
         .replace(
           '<script src="./bundle.js"></script>',
-          `<script>${bundle}</script>`
+          `<script>${uglify.minify(bundle).code}</script>`
         )
         .replace(
           '<link rel="stylesheet" href="./styles.css">',
-          `<style>${output.styles}</style>`
+          `<style>${output}</style>`
         )
         .replace('<!--__INJECT__-->', inject);
 
