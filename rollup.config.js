@@ -4,24 +4,24 @@ import livereload from 'rollup-plugin-livereload';
 import typescript from 'rollup-plugin-typescript2';
 import * as fs from 'fs';
 import { execSync } from 'child_process';
-import * as CleanCSS from 'clean-css';
+import * as csso from 'csso';
 import { minify } from 'uglify-es';
 
 const prod = process.env.NODE_ENV === 'production';
-const DEPLOY_DIR = 'public-s3';
+const DEPLOY_DIR = 'docs';
 
 function prodPlugin() {
   return {
     transformBundle(source) {
       return minify(source).code.replace(/\s+/g, ' ');
     },
-    onwrite() {
+    buildEnd() {
       const index = fs.readFileSync('./public/index.html').toString();
       const inject = fs.readFileSync('./public/inject.html').toString();
       const input = fs.readFileSync('./public/styles.css').toString();
       const bundle = fs.readFileSync('./public/bundle.js').toString();
 
-      const output = new CleanCSS({}).minify(input);
+      const output = csso.minify(input).css;
 
       const replaced = index
         .replace(
