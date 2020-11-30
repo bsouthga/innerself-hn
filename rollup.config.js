@@ -1,6 +1,5 @@
 import resolve from '@rollup/plugin-node-resolve';
 import serve from 'rollup-plugin-serve';
-import livereload from 'rollup-plugin-livereload';
 import typescript from 'rollup-plugin-typescript2';
 import * as fs from 'fs';
 import { execSync } from 'child_process';
@@ -49,7 +48,6 @@ export default {
       ? [prodPlugin()]
       : [
           serve({ contentBase: 'public', historyApiFallback: true }),
-          livereload()
         ])
   ],
   output: {

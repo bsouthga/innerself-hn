@@ -1,16 +1,8 @@
 <!-- Global Site Tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-54214517-5"></script>
 <script>
-  /**
-   * handle s3 redirects
-   */
-  if (location.hash.length > 0 && location.hash.substring(0, 2) === '#!') {
-    history.pushState({}, '', location.hash.substring(2));
-  }
-
   window.dataLayer = window.dataLayer || [];
   function gtag() { dataLayer.push(arguments) };
   gtag('js', new Date());
   gtag('config', 'UA-54214517-5');
-
 </script>
