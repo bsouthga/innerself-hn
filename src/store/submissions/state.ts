@@ -1,4 +1,4 @@
-import { TopRequestType } from './actions';
+import { TopRequestType } from "./actions";
 
 export interface Requesting {
   [key: string]: boolean | void;

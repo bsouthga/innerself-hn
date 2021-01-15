@@ -1,6 +1,6 @@
-import { queryFromString } from '../util';
-import { RoutePath, RouteResult } from './actions';
-import { ASK, COMMENTS, HOME, ITEM, NEW, SHOW, USER } from './paths';
+import { queryFromString } from "../util";
+import { RoutePath, RouteResult } from "./actions";
+import { ASK, COMMENTS, HOME, ITEM, NEW, SHOW, USER } from "./paths";
 
 const pathList: RoutePath[] = [NEW, COMMENTS, HOME, ITEM, SHOW, ASK, USER];
 
@@ -14,7 +14,7 @@ export const getCurrentRouteResult = (): RouteResult => {
   const path = valid ? (pathname as RoutePath) : HOME;
 
   if (!valid) {
-    history.pushState({}, 'Innerself News', '/');
+    history.pushState({}, "Innerself News", "/");
   }
 
   return { path, query };

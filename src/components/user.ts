@@ -1,4 +1,4 @@
-import html from 'innerself';
+import html from "innerself";
 import {
   dispatch,
   getFailed,
@@ -7,20 +7,20 @@ import {
   getRequesting,
   getUser,
   State,
-} from '../store';
-import { formatDate, isString, lastMinute } from '../store/util';
-import { Loading } from './loading';
-import { NotFound } from './not-found';
-import { Submitted } from './submitted';
+} from "../store";
+import { formatDate, isString, lastMinute } from "../store/util";
+import { Loading } from "./loading";
+import { NotFound } from "./not-found";
+import { Submitted } from "./submitted";
 
 export const ensureUser = (state: State) => {
-  const { id = '' } = getQuery(state);
+  const { id = "" } = getQuery(state);
   const requesting = getRequesting(state);
   const failed = getFailed(state);
 
   if (!id) return NotFound();
   const user = getItemById(state, id);
-  if (user && user.type !== 'user') return NotFound();
+  if (user && user.type !== "user") return NotFound();
 
   if (!user) {
     if (!requesting[id] && (!failed[id] || failed[id] < lastMinute()))
@@ -41,10 +41,10 @@ export const User = (state: State) => {
     : html`
         <table>
           ${[
-            row('user', user.id),
-            row('created', formatDate(user.created)),
-            row('karma', user.karma),
-            row('about', user.about || 'blank'),
+            row("user", user.id),
+            row("created", formatDate(user.created)),
+            row("karma", user.karma),
+            row("about", user.about || "blank"),
           ]}
         </table>
         ${Submitted(state)}

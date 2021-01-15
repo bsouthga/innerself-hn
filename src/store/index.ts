@@ -1,7 +1,7 @@
-import { createStore } from 'innerself';
-import { Action } from './actions';
-import middleware from './middleware';
-import { reducer } from './reducer';
+import { createStore } from "innerself";
+import { Action } from "./actions";
+import middleware from "./middleware";
+import { reducer } from "./reducer";
 
 const { dispatch: originalDispatch, connect, attach } = createStore(
   middleware(reducer)
@@ -25,9 +25,9 @@ export function dispatch(action: Action, toString?: boolean) {
 }
 
 export { connect, attach };
-export * from './hn-types';
-export * from './actions';
-export * from './state';
-export * from './router';
-export * from './submissions';
-export * from './db';
+export * from "./hn-types";
+export * from "./actions";
+export * from "./state";
+export * from "./router";
+export * from "./submissions";
+export * from "./db";

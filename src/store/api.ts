@@ -1,8 +1,8 @@
-import { Item, User } from './hn-types';
-import { TopRequestType } from './submissions';
-import { cachedFetch, keys, set } from './util';
+import { Item, User } from "./hn-types";
+import { TopRequestType } from "./submissions";
+import { cachedFetch, keys, set } from "./util";
 
-const API_BASE = 'https://hacker-news.firebaseio.com/v0/';
+const API_BASE = "https://hacker-news.firebaseio.com/v0/";
 
 export const json = <T = any>(
   endpoint: string,
@@ -18,7 +18,7 @@ export const requestItems = <T extends Item>(ids: number[]) =>
   Promise.all(ids.map((id) => json<T>(`item/${id}`)));
 
 export const requestTop = (type: TopRequestType, n = 20) =>
-  json<number[]>((type || 'top') + 'stories');
+  json<number[]>((type || "top") + "stories");
 
 export const requestUser = (id: string | number) =>
-  json<User>(`user/${id}`).then((u) => set(u, { type: 'user' }) as User);
+  json<User>(`user/${id}`).then((u) => set(u, { type: "user" }) as User);

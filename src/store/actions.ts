@@ -1,8 +1,8 @@
-import { ActionTypes } from './action-types';
-import { DbAction } from './db';
-import { RouterAction } from './router';
-import { SubmissionAction } from './submissions';
-import { createAction } from './util';
+import { ActionTypes } from "./action-types";
+import { DbAction } from "./db";
+import { RouterAction } from "./router";
+import { SubmissionAction } from "./submissions";
+import { createAction } from "./util";
 
 /**
  * union of all application actions

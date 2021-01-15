@@ -2,18 +2,20 @@ interface Window {
   dispatch: (action: any) => void;
 }
 
-declare module 'innerself' {
+declare module "innerself" {
   /**
    * create html markdown
    */
   function html(
     components: TemplateStringsArray,
-    ...values: (| boolean
+    ...values: (
+      | boolean
       | void
       | null
       | string
       | number
-      | (void | null | boolean | string | number)[])[]
+      | (void | null | boolean | string | number)[]
+    )[]
   ): string;
 
   /**

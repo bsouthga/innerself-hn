@@ -1,12 +1,12 @@
-import { dispatch } from './';
-import { Action, init } from './actions';
-import { getItemById } from './db';
-import { Comment, Item, Story } from './hn-types';
-import { State } from './state';
-import { getFailed, getItems, getRequesting } from './submissions';
+import { dispatch } from "./";
+import { Action, init } from "./actions";
+import { getItemById } from "./db";
+import { Comment, Item, Story } from "./hn-types";
+import { State } from "./state";
+import { getFailed, getItems, getRequesting } from "./submissions";
 
-const STORAGE_PREFIX = '_in_';
-const TS_REGEX = new RegExp(['^', STORAGE_PREFIX, '.*:ts$'].join(''));
+const STORAGE_PREFIX = "_in_";
+const TS_REGEX = new RegExp(["^", STORAGE_PREFIX, ".*:ts$"].join(""));
 const storage = localStorage;
 const urlsp = (q?: string) => new URLSearchParams(q);
 const MINUTE = 6e4;
@@ -33,11 +33,11 @@ export const str = (x: number | string | { toString(): string }) => `${x}`;
 export const lastMinute = () => now() - MINUTE;
 
 export const isStory = (item?: Item | void): item is Story =>
-  !!item && item.type === 'story';
+  !!item && item.type === "story";
 export const isComment = (item?: Item | void): item is Comment =>
-  !!item && item.type === 'comment';
-export const isString = (obj: any): obj is string => typeof obj === 'string';
-export const isObject = (obj: any): obj is object => typeof obj === 'object';
+  !!item && item.type === "comment";
+export const isString = (obj: any): obj is string => typeof obj === "string";
+export const isObject = (obj: any): obj is object => typeof obj === "object";
 
 export const max = Math.max;
 export const min = Math.min;
@@ -96,7 +96,7 @@ export const compose = <A>(...fns: ((a: A) => A)[]): ((a: A) => A) => {
 export const cachedFetch = (url: string, options?: RequestInit) => {
   const cacheKey = `${STORAGE_PREFIX}${url}`;
   const cached = storage.getItem(cacheKey);
-  const whenCached = storage.getItem(cacheKey + ':ts');
+  const whenCached = storage.getItem(cacheKey + ":ts");
   if (cached && whenCached) {
     const age = now() - num(whenCached);
     if (age < expiry) {
@@ -104,20 +104,20 @@ export const cachedFetch = (url: string, options?: RequestInit) => {
       return Promise.resolve(response);
     } else {
       storage.removeItem(cacheKey);
-      storage.removeItem(cacheKey + ':ts');
+      storage.removeItem(cacheKey + ":ts");
     }
   }
 
   return fetch(url, options).then((response) => {
     if (response.status === 200) {
-      const ct = response.headers.get('Content-Type');
+      const ct = response.headers.get("Content-Type");
       if (ct && (ct.match(/application\/json/i) || ct.match(/text\//i))) {
         response
           .clone()
           .text()
           .then((content) => {
             storage.setItem(cacheKey, content);
-            storage.setItem(cacheKey + ':ts', str(now()));
+            storage.setItem(cacheKey + ":ts", str(now()));
           });
       }
     }
@@ -151,28 +151,28 @@ export const combineReducers = <S extends { [key: string]: any }>(
     }, state || {});
 };
 
-const plural = (n: number) => (n === 1 ? ' ago' : 's ago');
+const plural = (n: number) => (n === 1 ? " ago" : "s ago");
 const formatDateHelper = (diff: number, div: number, text: string) => {
   const v = round(diff / div);
-  return v + ' ' + text + plural(v);
+  return v + " " + text + plural(v);
 };
 
 export const formatDate = (d: number) => {
   const diff = now() - d * 1000;
   switch (true) {
     case diff > DAY:
-      return formatDateHelper(diff, DAY, 'day');
+      return formatDateHelper(diff, DAY, "day");
     case diff > HOUR:
-      return formatDateHelper(diff, HOUR, 'hour');
+      return formatDateHelper(diff, HOUR, "hour");
     case diff > MINUTE:
-      return formatDateHelper(diff, MINUTE, 'minute');
+      return formatDateHelper(diff, MINUTE, "minute");
     default: {
-      return 'less than a minute ago';
+      return "less than a minute ago";
     }
   }
 };
 
-export const replaceLinkHost = (content: string = '') =>
+export const replaceLinkHost = (content: string = "") =>
   content.replace(HN_HOST, `${protocol}//${host}`);
 
 /**
@@ -228,7 +228,7 @@ export const pruneLocalStorage = () => {
     while (r--) {
       const key = remove[r];
       storage.removeItem(key);
-      storage.removeItem(key.replace(':ts', ''));
+      storage.removeItem(key.replace(":ts", ""));
     }
     tick(pruneLocalStorage);
   }

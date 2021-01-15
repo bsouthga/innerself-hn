@@ -1,14 +1,14 @@
-import { ActionTypes } from '../action-types';
-import { Action } from '../actions';
-import { now, set } from '../util';
-import { SubmissionState } from './state';
+import { ActionTypes } from "../action-types";
+import { Action } from "../actions";
+import { now, set } from "../util";
+import { SubmissionState } from "./state";
 
 const getIds = (payload: {
   id?: string | number;
   ids?: (string | number)[];
 }) => {
   const { id, ids } = payload;
-  const idList = ids || (typeof id !== 'undefined' && [id]) || [];
+  const idList = ids || (typeof id !== "undefined" && [id]) || [];
   return idList;
 };
 

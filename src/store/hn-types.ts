@@ -4,7 +4,7 @@
 export type Item = Comment | Story | Job | Poll | PollOpt | User;
 
 export interface Comment {
-  type: 'comment';
+  type: "comment";
   by: string;
   id: number;
   kids: number[];
@@ -14,7 +14,7 @@ export interface Comment {
 }
 
 export interface Story {
-  type: 'story';
+  type: "story";
   by: string;
   descendants: number;
   id: number;
@@ -27,7 +27,7 @@ export interface Story {
 }
 
 export interface Job {
-  type: 'job';
+  type: "job";
   by: string;
   id: number;
   score: number;
@@ -38,7 +38,7 @@ export interface Job {
 }
 
 export interface Poll {
-  type: 'poll';
+  type: "poll";
   by: string;
   descendants: number;
   id: number;
@@ -51,7 +51,7 @@ export interface Poll {
 }
 
 export interface PollOpt {
-  type: 'pollopt';
+  type: "pollopt";
   by: string;
   id: number;
   poll: number;
@@ -61,7 +61,7 @@ export interface PollOpt {
 }
 
 export interface User {
-  type: 'user';
+  type: "user";
   id: string;
   karma: number;
   created: number;

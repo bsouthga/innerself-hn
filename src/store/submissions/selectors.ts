@@ -1,5 +1,5 @@
-import { State } from '../state';
-import { TopRequestType } from './actions';
+import { State } from "../state";
+import { TopRequestType } from "./actions";
 
 export const getSubmissions = (state: State) => state.submissions;
 export const getFailed = (state: State) => getSubmissions(state).failed;

@@ -1,7 +1,7 @@
-import html from 'innerself';
-import { connect, getItemById, State } from '../store';
-import { isStory } from '../store/util';
-import { Article, ARTICLE } from './article';
+import html from "innerself";
+import { connect, getItemById, State } from "../store";
+import { isStory } from "../store/util";
+import { Article, ARTICLE } from "./article";
 
 interface ArticleProps {
   items: number[];
@@ -15,7 +15,7 @@ export const ArticleList = connect((state: State, props: ArticleProps) => {
   return html`
     <div class="${ARTICLE}-list">
       ${!stories.length
-        ? '(no items)'
+        ? "(no items)"
         : stories.map((item, index) =>
             Article({ item, index: index + skip || 0 })
           )}

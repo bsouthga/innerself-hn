@@ -1,4 +1,4 @@
-import { Item } from '../hn-types';
+import { Item } from "../hn-types";
 
 export interface DbState {
   entities: {

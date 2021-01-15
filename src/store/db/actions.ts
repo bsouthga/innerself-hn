@@ -1,6 +1,6 @@
-import { ActionTypes } from '../action-types';
-import { Item } from '../hn-types';
-import { createAction, set } from '../util';
+import { ActionTypes } from "../action-types";
+import { Item } from "../hn-types";
+import { createAction, set } from "../util";
 
 export type DbAction = InsertEntitesAction;
 

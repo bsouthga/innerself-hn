@@ -1,6 +1,6 @@
-import { ActionTypes } from '../action-types';
-import { createAction } from '../util';
-import * as paths from './paths';
+import { ActionTypes } from "../action-types";
+import { createAction } from "../util";
+import * as paths from "./paths";
 
 export type RouterAction = LocationChangeRequest | LocationChangeSuccess;
 

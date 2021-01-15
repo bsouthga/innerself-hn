@@ -1,4 +1,4 @@
-import { App } from './components';
-import { attach } from './store';
+import { App } from "./components";
+import { attach } from "./store";
 
-attach(App, document.getElementById('root')!);
+attach(App, document.getElementById("root")!);

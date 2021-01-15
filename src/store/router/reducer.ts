@@ -1,8 +1,8 @@
-import { ActionTypes } from '../action-types';
-import { Action } from '../actions';
-import { set } from '../util';
-import { RouteResult } from './actions';
-import { getCurrentRouteResult } from './current';
+import { ActionTypes } from "../action-types";
+import { Action } from "../actions";
+import { set } from "../util";
+import { RouteResult } from "./actions";
+import { getCurrentRouteResult } from "./current";
 
 export const router = (
   state: RouteResult = getCurrentRouteResult(),

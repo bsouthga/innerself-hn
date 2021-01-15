@@ -1,14 +1,14 @@
-import { dispatch } from '../';
-import { ActionTypes } from '../action-types';
-import { Action } from '../actions';
-import { createAction, queryToString } from '../util';
-import { getCurrentRouteResult } from './current';
+import { dispatch } from "../";
+import { ActionTypes } from "../action-types";
+import { Action } from "../actions";
+import { createAction, queryToString } from "../util";
+import { getCurrentRouteResult } from "./current";
 
 export const createRouterMiddleware = () => {
   /**
    * listen for back / forward and update state
    */
-  window.addEventListener('popstate', () =>
+  window.addEventListener("popstate", () =>
     dispatch(
       createAction(ActionTypes.LOCATION_CHANGE_SUCCESS, getCurrentRouteResult())
     )
@@ -23,7 +23,7 @@ export const createRouterMiddleware = () => {
         history.pushState(
           {},
           path,
-          (path || '/') + (queryString ? '?' + queryString : '')
+          (path || "/") + (queryString ? "?" + queryString : "")
         );
         return createAction(ActionTypes.LOCATION_CHANGE_SUCCESS, payload);
       }

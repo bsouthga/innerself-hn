@@ -1,10 +1,10 @@
-import { ActionTypes } from '../action-types';
-import { requestItems, requestTop, requestUser } from '../api';
-import { insertEntities } from '../db';
-import { Item, User } from '../hn-types';
-import { dispatch } from '../index';
-import { paths } from '../router';
-import { createAction, num } from '../util';
+import { ActionTypes } from "../action-types";
+import { requestItems, requestTop, requestUser } from "../api";
+import { insertEntities } from "../db";
+import { Item, User } from "../hn-types";
+import { dispatch } from "../index";
+import { paths } from "../router";
+import { createAction, num } from "../util";
 
 export type TopRequestType =
   | typeof paths.HOME

@@ -1,7 +1,7 @@
-import { ActionTypes } from '../action-types';
-import { Action } from '../actions';
-import { set } from '../util';
-import { DbState } from './state';
+import { ActionTypes } from "../action-types";
+import { Action } from "../actions";
+import { set } from "../util";
+import { DbState } from "./state";
 
 export const db = (state: DbState = { entities: {} }, action: Action) => {
   switch (action.type) {

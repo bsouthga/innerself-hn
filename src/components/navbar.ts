@@ -1,11 +1,11 @@
-import html from 'innerself';
-import { connect, getPath, paths, State } from '../store';
-import { set } from '../store/util';
-import { Link, LinkProps } from './link';
+import html from "innerself";
+import { connect, getPath, paths, State } from "../store";
+import { set } from "../store/util";
+import { Link, LinkProps } from "./link";
 
 export const NavbarLink = connect((state: State, props: LinkProps) => {
   const active = getPath(state) === props.path;
-  const cls = (props.cls || '') + ' navbar-link ' + (active ? 'active' : '');
+  const cls = (props.cls || "") + " navbar-link " + (active ? "active" : "");
 
   return Link(set(props, { cls, query: {} }));
 });
@@ -15,9 +15,9 @@ type PathKey = keyof Paths;
 type Path = Paths[PathKey];
 
 const links: { path: Path }[] = [
-  { path: 'new' },
-  { path: 'show' },
-  { path: 'ask' },
+  { path: "new" },
+  { path: "show" },
+  { path: "ask" },
 ];
 
 export const Navbar = () => html`
@@ -25,10 +25,10 @@ export const Navbar = () => html`
     <div class="navbar-links">
       ${NavbarLink({
         path: paths.HOME,
-        cls: 'logo',
-        text: 'Innerself News',
+        cls: "logo",
+        text: "Innerself News",
       })}
-      ${links.map(NavbarLink).join(' | ')}
+      ${links.map(NavbarLink).join(" | ")}
     </div>
     <a class="navbar-link" href="https://github.com/bsouthga/innerself-hn">
       <img src="github.svg" />

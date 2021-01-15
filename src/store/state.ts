@@ -1,6 +1,6 @@
-import { DbState } from './db';
-import { RouterState } from './router';
-import { SubmissionState } from './submissions';
+import { DbState } from "./db";
+import { RouterState } from "./router";
+import { SubmissionState } from "./submissions";
 
 export interface State {
   submissions: SubmissionState;

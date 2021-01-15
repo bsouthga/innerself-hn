@@ -1,4 +1,4 @@
-import { State } from '../state';
+import { State } from "../state";
 
 export const getItemById = (state: State, id: string | number) => {
   const entities = state.db.entities;

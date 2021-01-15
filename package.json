@@ -6,7 +6,7 @@
   "scripts": {
     "rollup": "rollup -c ./rollup.config.js",
     "tsc": "tsc",
-    "test": "prettier --single-quote --write './src/**/*.ts' && tslint --project ./ --fix './src/**/*.ts'",
+    "test": "prettier --write './src/**/*.ts' && tslint --project ./ --fix './src/**/*.ts'",
     "start": "npm run rollup -- -w",
     "build": "export NODE_ENV='production' && npm run rollup",
     "sync": "aws s3 sync ./public-s3/ s3://innerself-hn.com",

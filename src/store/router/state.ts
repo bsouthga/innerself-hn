@@ -1,4 +1,4 @@
-import { RouteResult } from './actions';
+import { RouteResult } from "./actions";
 
 export type RouterState = RouteResult & {
   previous?: RouteResult;
