@@ -1,11 +1,11 @@
-import html from 'innerself';
-import { connect, getPath, paths } from '../store';
+import html from "innerself";
+import { connect, getPath, paths } from "../store";
 
-import { Home } from './home';
-import { Item } from './item';
-import { Navbar } from './navbar';
-import { NotFound } from './not-found';
-import { User } from './user';
+import { Home } from "./home";
+import { Item } from "./item";
+import { Navbar } from "./navbar";
+import { NotFound } from "./not-found";
+import { User } from "./user";
 
 const Content = connect((state) => {
   const path = getPath(state);
@@ -29,6 +29,8 @@ export const App = () => html`
   <div class="container">
     ${Navbar()}
     <div class="content">${Content()}</div>
-    <div class="footer"><a href="https://bsou.io">Ben Southgate</a> | 2017</div>
+    <div class="footer meta-text">
+      <a href="https://bsou.io">Ben Southgate</a> | 2017
+    </div>
   </div>
 `;

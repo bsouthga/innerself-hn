@@ -1,4 +1,4 @@
-import html from 'innerself';
+import html from "innerself";
 import {
   dispatch,
   getItemById,
@@ -7,7 +7,7 @@ import {
   getQuery,
   State,
   Story,
-} from '../store';
+} from "../store";
 import {
   isComment,
   isStory,
@@ -15,18 +15,18 @@ import {
   num,
   set,
   shouldRequest,
-} from '../store/util';
-import { Article } from './article';
-import { Comment } from './comment';
-import { Link, LinkProps } from './link';
-import { Loading } from './loading';
-import { Page, RESULTS_PER_PAGE } from './page';
-import { ensureUser } from './user';
+} from "../store/util";
+import { Article } from "./article";
+import { Comment } from "./comment";
+import { Link, LinkProps } from "./link";
+import { Loading } from "./loading";
+import { Page, RESULTS_PER_PAGE } from "./page";
+import { ensureUser } from "./user";
 
-const SUBMITTED = 'submitted';
+const SUBMITTED = "submitted";
 
 const SubmittedItem = (item?: string) =>
-  !item ? '' : `<div class="${SUBMITTED}-item">${item.trim()}</div>`;
+  !item ? "" : `<div class="${SUBMITTED}-item">${item.trim()}</div>`;
 
 export const Submitted = (state: State) => {
   const user = ensureUser(state);
@@ -38,8 +38,8 @@ export const Submitted = (state: State) => {
   const { submitted = [] } = user;
 
   const total = submitted.length;
-  const skip = 'skip' in query ? num(query.skip) : 0;
-  const typesToShow = 'type' in query ? query.type : 'all';
+  const skip = "skip" in query ? num(query.skip) : 0;
+  const typesToShow = "type" in query ? query.type : "all";
   const show = submitted.slice(skip, skip + RESULTS_PER_PAGE);
   const need = show.filter((id) => !getItemById(state, id));
 
@@ -50,9 +50,9 @@ export const Submitted = (state: State) => {
 
   const showPrevious = skip !== 0;
   const showNext = skip + RESULTS_PER_PAGE < total;
-  const showAll = typesToShow === 'all';
-  const showComments = showAll || typesToShow === 'comments';
-  const showStories = showAll || typesToShow === 'stories';
+  const showAll = typesToShow === "all";
+  const showComments = showAll || typesToShow === "comments";
+  const showStories = showAll || typesToShow === "stories";
 
   const content = need.length
     ? Loading()
@@ -61,47 +61,47 @@ export const Submitted = (state: State) => {
           const item = getItemById(state, id)!;
           switch (true) {
             case isComment(item):
-              return showComments ? Comment({ id, compact: true }) : '';
+              return showComments ? Comment({ id, compact: true }) : "";
             case isStory(item):
-              return showStories ? Article({ item: item as Story }) : '';
+              return showStories ? Article({ item: item as Story }) : "";
           }
         })
         .map(SubmittedItem)
-        .join('');
+        .join("");
 
   const links = [
-    { text: `show all`, query: set(query, { type: 'all' }) },
+    { text: `show all`, query: set(query, { type: "all" }) },
     {
       text: `comments only`,
-      query: set(query, { type: 'comments' }),
+      query: set(query, { type: "comments" }),
     },
     {
       text: `stories only`,
-      query: set(query, { type: 'stories' }),
+      query: set(query, { type: "stories" }),
     },
   ];
 
   return html`
     <div class="${SUBMITTED}">
       <div class="${SUBMITTED}-title">submissions by ${user.id}</div>
-      <div class="paging-controls">
-        ${showPrevious ? Page('previous', skip) + '|' : ''}
+      <div class="paging-controls meta-text">
+        ${showPrevious ? Page("previous", skip) + "|" : ""}
         ${links
           .map((link) =>
             Link(
               set(
                 {
-                  cls: link.query.type === typesToShow ? 'active' : '',
+                  cls: link.query.type === typesToShow ? "active" : "",
                   path,
                 } as LinkProps,
                 link
               )
             )
           )
-          .join('|')}
-        ${showNext ? '|' + Page('next', skip) : ''}
+          .join("|")}
+        ${showNext ? "|" + Page("next", skip) : ""}
       </div>
-      <div class="${SUBMITTED}-content">${content || '(none)'}</div>
+      <div class="${SUBMITTED}-content">${content || "(none)"}</div>
     </div>
   `;
 };

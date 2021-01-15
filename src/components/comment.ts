@@ -1,4 +1,4 @@
-import html from 'innerself';
+import html from "innerself";
 import {
   connect,
   dispatch,
@@ -6,18 +6,18 @@ import {
   paths,
   State,
   toggleExpandItem,
-} from '../store';
+} from "../store";
 import {
   ensureRequested,
   formatDate,
   isComment,
   replaceLinkHost,
-} from '../store/util';
-import { ARTICLE } from './article';
-import { Link } from './link';
-import { Loading } from './loading';
+} from "../store/util";
+import { ARTICLE } from "./article";
+import { Link } from "./link";
+import { Loading } from "./loading";
 
-export const COMMENT = 'comment';
+export const COMMENT = "comment";
 
 export interface CommentProps {
   id: string | number;
@@ -29,7 +29,10 @@ export interface CommentProps {
  * toggle expanding comment children
  */
 const ToggleLink = (id: number | string, children: string) => html`
-  <a class="${COMMENT}-expand" onclick=${dispatch(toggleExpandItem(id), true)}>
+  <a
+    class="${COMMENT}-expand meta-text"
+    onclick=${dispatch(toggleExpandItem(id), true)}
+  >
     ${children}
   </a>
 `;
@@ -42,15 +45,15 @@ export const Comment = connect((state: State, props: CommentProps): string => {
   const expanded = getExpanded(state);
   const item = ensureRequested(state, id);
 
-  if (!isComment(item)) return '';
+  if (!isComment(item)) return "";
 
   const user = !item.by
-    ? '[deleted]'
+    ? "[deleted]"
     : Link({
         path: paths.USER,
         text: `${item.by}`,
         cls: `${ARTICLE}-link`,
-        query: { id: item.by || '' },
+        query: { id: item.by || "" },
       });
 
   const commentLink = Link({
@@ -64,7 +67,7 @@ export const Comment = connect((state: State, props: CommentProps): string => {
     compact &&
     Link({
       path: paths.ITEM,
-      text: 'parent',
+      text: "parent",
       cls: `${ARTICLE}-link`,
       query: { id: `${item.parent}` },
     });
@@ -78,19 +81,19 @@ export const Comment = connect((state: State, props: CommentProps): string => {
   const showChildren = kids.length && !compact;
 
   const children = !showChildren
-    ? ''
+    ? ""
     : !expanded[id]
-    ? ''
-    : kids.map((kid) => Comment({ id: kid, child: true })).join('') ||
+    ? ""
+    : kids.map((kid) => Comment({ id: kid, child: true })).join("") ||
       Loading();
 
   return html`
-    <div class="${COMMENT} ${child ? COMMENT + '-child' : ''}">
-      <div class="${COMMENT}-info">
-        ${user} ${commentLink} ${parentLink ? '| ' + parentLink : ''}
+    <div class="${COMMENT} ${child ? COMMENT + "-child" : ""}">
+      <div class="${COMMENT}-info meta-text">
+        ${user} ${commentLink} ${parentLink ? "| " + parentLink : ""}
       </div>
       <div class="${COMMENT}-text">${replaceLinkHost(item.text)}</div>
-      ${showChildren ? childrenToggle : ''} ${replaceLinkHost(children)}
+      ${showChildren ? childrenToggle : ""} ${replaceLinkHost(children)}
     </div>
   `;
 });

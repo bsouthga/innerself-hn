@@ -1,8 +1,29 @@
+:root {
+  --bg-color: #f6f6ef;
+  --text-color: #000;
+  --muted-color: rgba(0, 0, 0, 0.5);
+  --highlight-color: #a28ad2;
+  --navbar-selected-color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #222;
+    --text-color: #ccc;
+    --muted-color: #aaa;
+    --highlight-color: #457b9d;
+    --navbar-selected-color: #222;
+  }
+}
+
 html,
 body {
   box-sizing: border-box;
   margin: 0;
-  background-color: #f6f6ef;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 *,
 *:before,
@@ -17,11 +38,14 @@ pre {
 table td,
 table td * {
   vertical-align: top;
-  font-size: 12px;
+}
+
+a {
+  color: var(--highlight-color);
 }
 
 a:not(.navbar-link):not(.client-link):visited {
-  color: #a28ad2;
+  color: var(--muted-color);
 }
 
 a:hover {
@@ -34,11 +58,7 @@ a.client-link {
   text-decoration: inherit;
 }
 
-/*
-  Main app container
- */
 .container {
-  font-family: sans-serif;
   display: flex;
   flex-direction: column;
   max-width: 900px;
@@ -50,7 +70,7 @@ a.client-link {
   flex-direction: column;
   padding: 5px;
   overflow-y: auto;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--muted-color);
 }
 
 .footer {
@@ -74,7 +94,7 @@ a.client-link {
 
 .article-title {
   text-decoration: none;
-  color: black;
+  color: var(--text-color);
 }
 
 .article-title:hover,
@@ -85,16 +105,11 @@ a.client-link {
 
 .article-text {
   margin-top: 10px;
-  font-size: 12px;
 }
 
-.footer,
-.host,
-.article-info,
-.submitted-title,
-.paging-controls {
+.meta-text {
   font-size: 0.8em;
-  color: rgba(0, 0, 0, 0.7);
+  color: var(--muted-color);
 }
 
 .host {
@@ -123,13 +138,9 @@ a.client-link {
 .submitted-content {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid var(--muted-color);
   padding: 10px;
   flex-shrink: 0;
-}
-
-.comment {
-  font-size: 12px;
 }
 
 .comment:not(:first-child) {
@@ -141,12 +152,12 @@ a.client-link {
 }
 
 .comment-info {
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--muted-color);
   margin-bottom: 10px;
 }
 
 .comment-expand {
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--muted-color);
   cursor: pointer;
 }
 
@@ -159,28 +170,23 @@ a.client-link {
   padding-left: 20px;
 }
 
-/*
-  Navigation
-*/
 .navbar {
-  background-color: #a28ad2;
+  background-color: var(--highlight-color);
   padding: 6px;
   margin-bottom: 10px;
   display: flex;
   flex-direction: row;
   flex-shrink: 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
 
 .navbar a {
-  color: inherit;
   cursor: pointer;
   text-decoration: none;
   margin: 0px 5px;
 }
 
 .navbar a.active {
-  color: white;
+  color: var(--navbar-selected-color);
 }
 
 .navbar .logo {
@@ -196,73 +202,36 @@ a.client-link {
   width: 15px;
 }
 
-/**
- * https://projects.lukehaas.me/css-loaders/
- */
-.loader,
-.loader:before,
-.loader:after {
-  border-radius: 50%;
+.loader-container {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .loader {
-  color: #a28ad2;
-  font-size: 11px;
-  text-indent: -99999em;
-  margin: 55px auto;
-  position: relative;
-  width: 10em;
-  height: 10em;
-  box-shadow: inset 0 0 0 1em;
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
-}
-.loader:before,
-.loader:after {
-  position: absolute;
-  content: '';
-}
-.loader:before {
-  width: 5.2em;
-  height: 10.2em;
-  background: #f6f6ef;
-  border-radius: 10.2em 0 0 10.2em;
-  top: -0.1em;
-  left: -0.1em;
-  -webkit-transform-origin: 5.2em 5.1em;
-  transform-origin: 5.2em 5.1em;
-  -webkit-animation: load2 2s infinite ease 1.5s;
-  animation: load2 2s infinite ease 1.5s;
+  display: inline-block;
+  width: 80px;
+  height: 80px;
 }
 .loader:after {
-  width: 5.2em;
-  height: 10.2em;
-  background: #f6f6ef;
-  border-radius: 0 10.2em 10.2em 0;
-  top: -0.1em;
-  left: 5.1em;
-  -webkit-transform-origin: 0px 5.1em;
-  transform-origin: 0px 5.1em;
-  -webkit-animation: load2 2s infinite ease;
-  animation: load2 2s infinite ease;
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid var(--highlight-color);
+  border-color: var(--highlight-color) transparent var(--highlight-color)
+    transparent;
+  animation: loader 1.2s linear infinite;
 }
-@-webkit-keyframes load2 {
+@keyframes loader {
   0% {
-    -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
   100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-@keyframes load2 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
 }

@@ -7,11 +7,11 @@ import {
   getTopSubmissions,
   State,
   TopRequestType,
-} from '../store';
-import { num, shouldRequest } from '../store/util';
-import { ArticleList } from './article-list';
-import { Loading } from './loading';
-import { Page, RESULTS_PER_PAGE } from './page';
+} from "../store";
+import { num, shouldRequest } from "../store/util";
+import { ArticleList } from "./article-list";
+import { Loading } from "./loading";
+import { Page, RESULTS_PER_PAGE } from "./page";
 
 export const Home = (state: State, type: TopRequestType) => {
   const stories = getItemsByType(state, type);
@@ -24,7 +24,7 @@ export const Home = (state: State, type: TopRequestType) => {
     return Loading();
   }
 
-  const skip = 'skip' in query ? num(query.skip) : 0;
+  const skip = "skip" in query ? num(query.skip) : 0;
   const slice = stories.slice(skip, skip + RESULTS_PER_PAGE);
 
   // next, check for all items in the slice we are interested in...
@@ -39,10 +39,10 @@ export const Home = (state: State, type: TopRequestType) => {
 
     return `
       ${ArticleList({ items: slice, skip })}
-      <div class="paging-controls">
-        ${showPrevious ? Page('previous', skip) : ''}
-        ${showPrevious && showNext ? ' | ' : ''}
-        ${showNext ? Page('next', skip) : ''}
+      <div class="paging-controls meta-text">
+        ${showPrevious ? Page("previous", skip) : ""}
+        ${showPrevious && showNext ? " | " : ""}
+        ${showNext ? Page("next", skip) : ""}
       </div>
     `;
   }
