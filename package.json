@@ -8,9 +8,7 @@
     "tsc": "tsc",
     "test": "prettier --write './src/**/*.ts' && tslint --project ./ --fix './src/**/*.ts'",
     "start": "npm run rollup -- -w",
-    "build": "export NODE_ENV='production' && npm run rollup",
-    "sync": "aws s3 sync ./public-s3/ s3://innerself-hn.com",
-    "deploy": "npm run build && npm run sync"
+    "build": "export NODE_ENV='production' && npm run rollup"
   },
   "keywords": [
     "innerself",
